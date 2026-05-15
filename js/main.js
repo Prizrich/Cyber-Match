@@ -143,7 +143,6 @@ function setupEventListeners() {
         if (confirm("⚠️ УДАЛИТЬ ВЕСЬ ПРОГРЕСС?")) {
             localStorage.removeItem("cyberMatchFixed");
             localStorage.removeItem("cyberMatchAudio");
-            localStorage.removeItem("gameInterfaceStyle");
             location.reload();
         }
     };
@@ -185,70 +184,9 @@ function closeTutorial() {
     if (modal) modal.classList.remove("active");
 }
 
-// Переключение стилей интерфейса (работает везде)
-function initStyleSwitcher() {
-    // Получаем сохранённый стиль или ставим "default" по умолчанию
-    let savedStyle = localStorage.getItem("gameInterfaceStyle");
-    
-    if (!savedStyle) {
-        savedStyle = "default";
-        localStorage.setItem("gameInterfaceStyle", "default");
-    }
-    
-    // Применяем сохранённый стиль ко всему body
-    applyStyleToBody(savedStyle);
-    
-    // Находим кнопки в настройках и обновляем их состояние
-    updateStyleButtonsState(savedStyle);
-    
-    // Добавляем обработчики для кнопок
-    const styleBtns = document.querySelectorAll(".style-btn");
-    styleBtns.forEach(btn => {
-        btn.onclick = () => {
-            const newStyle = btn.dataset.style;
-            localStorage.setItem("gameInterfaceStyle", newStyle);
-            applyStyleToBody(newStyle);
-            updateStyleButtonsState(newStyle);
-            
-            // Визуальный эффект при смене стиля
-            const container = document.querySelector(".game-container") || document.querySelector(".start-container");
-            if (container) {
-                container.style.transform = "scale(0.99)";
-                setTimeout(() => {
-                    container.style.transform = "scale(1)";
-                }, 150);
-            }
-        };
-    });
-}
-
-function applyStyleToBody(style) {
-    if (style === "pixel") {
-        document.body.classList.add("pixel-style");
-        document.body.classList.remove("default-style");
-    } else {
-        document.body.classList.add("default-style");
-        document.body.classList.remove("pixel-style");
-    }
-}
-
-function updateStyleButtonsState(savedStyle) {
-    const styleBtns = document.querySelectorAll(".style-btn");
-    styleBtns.forEach(btn => {
-        const style = btn.dataset.style;
-        if ((style === "pixel" && savedStyle === "pixel") ||
-            (style === "default" && savedStyle === "default")) {
-            btn.classList.add("active");
-        } else {
-            btn.classList.remove("active");
-        }
-    });
-}
-
 // Запуск
 document.addEventListener("DOMContentLoaded", () => {
     initUIElements();
-    initStyleSwitcher();  // Применяем стиль ПЕРЕД всем остальным
     setupEventListeners();
     initStartScreen();
 });
