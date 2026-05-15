@@ -180,9 +180,16 @@ function closeTutorial() {
 
 // Переключение стилей интерфейса
 function initStyleSwitcher() {
-    const savedStyle = localStorage.getItem("gameInterfaceStyle") || "default";
+    // Получаем сохранённый стиль или ставим "default" по умолчанию
+    let savedStyle = localStorage.getItem("gameInterfaceStyle");
     
-    // Применяем сохранённый стиль
+    // Если стиль не сохранён (первый запуск) - ставим современный стиль
+    if (!savedStyle) {
+        savedStyle = "default";
+        localStorage.setItem("gameInterfaceStyle", "default");
+    }
+    
+    // Применяем сохранённый стиль (или default при первом запуске)
     if (savedStyle === "pixel") {
         document.body.classList.add("pixel-style");
         document.body.classList.remove("default-style");
@@ -191,7 +198,7 @@ function initStyleSwitcher() {
         document.body.classList.remove("pixel-style");
     }
     
-    // Находим кнопки в настройках
+    // Находим кнопки в настройках (если они уже есть на странице)
     const styleBtns = document.querySelectorAll(".style-btn");
     styleBtns.forEach(btn => {
         const style = btn.dataset.style;
@@ -220,10 +227,6 @@ function initStyleSwitcher() {
         };
     });
 }
-
-// Вызываем функцию после загрузки страницы
-// Добавь эту строку в конец DOMContentLoaded:
-// initStyleSwitcher();
 
 // Запуск
 document.addEventListener("DOMContentLoaded", () => {
