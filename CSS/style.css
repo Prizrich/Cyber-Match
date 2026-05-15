@@ -19,7 +19,7 @@ body {
     overflow-x: hidden;
     margin: 0;
     padding: 20px;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
 }
 
 /* ===== СОВРЕМЕННЫЙ СТИЛЬ (DEFAULT) ===== */
@@ -34,7 +34,7 @@ body.default-style .victory-card,
 body.default-style .shop-container,
 body.default-style .tutorial-container {
     border-radius: 40px;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
 }
 
 body.default-style .btn,
@@ -56,7 +56,6 @@ body.pixel-style {
     image-rendering: pixelated;
 }
 
-/* Принудительный пиксельный шрифт для ВСЕХ элементов */
 body.pixel-style,
 body.pixel-style *,
 body.pixel-style *::before,
@@ -64,7 +63,7 @@ body.pixel-style *::after {
     font-family: 'Press Start 2P', monospace !important;
 }
 
-/* Главное меню в пиксельном стиле */
+/* Главное меню */
 body.pixel-style .start-container {
     border-radius: 0px !important;
     box-shadow: 8px 8px 0px rgba(0,0,0,0.5) !important;
@@ -82,27 +81,15 @@ body.pixel-style .style-btn {
     font-family: 'Press Start 2P', monospace !important;
 }
 
-body.pixel-style .tabs {
-    border-radius: 0px !important;
-}
-
-body.pixel-style .tab-btn {
-    border-radius: 0px !important;
-}
-
-body.pixel-style .sound-settings {
-    border-radius: 0px !important;
-}
-
-body.pixel-style .style-btn {
-    border-radius: 0px !important;
-}
-
+body.pixel-style .tabs,
+body.pixel-style .tab-btn,
+body.pixel-style .sound-settings,
+body.pixel-style .style-btn,
 body.pixel-style .play-btn {
     border-radius: 0px !important;
 }
 
-/* ===== ИГРОВОЙ КОНТЕЙНЕР В ПИКСЕЛЬНОМ СТИЛЕ ===== */
+/* Игровой контейнер */
 body.pixel-style .game-container {
     border-radius: 0px !important;
     box-shadow: 8px 8px 0px rgba(0,0,0,0.5) !important;
@@ -110,79 +97,65 @@ body.pixel-style .game-container {
     backdrop-filter: none !important;
 }
 
-body.pixel-style .currency-bar {
+body.pixel-style .currency-bar,
+body.pixel-style .currency,
+body.pixel-style .world-header,
+body.pixel-style .world-nav-btn,
+body.pixel-style .current-world-card,
+body.pixel-style .level-badge,
+body.pixel-style .quest-panel,
+body.pixel-style .quest-target-display,
+body.pixel-style .stats-row,
+body.pixel-style .board-wrapper,
+body.pixel-style .btn,
+body.pixel-style .exit-menu-btn,
+body.pixel-style .help-btn,
+body.pixel-style .reset-progress-btn,
+body.pixel-style .shop-btn,
+body.pixel-style .progress-bar-bg,
+body.pixel-style #worldExtraInfo {
     border-radius: 0px !important;
+}
+
+body.pixel-style .currency-bar,
+body.pixel-style .btn,
+body.pixel-style .world-nav-btn,
+body.pixel-style .exit-menu-btn,
+body.pixel-style .help-btn,
+body.pixel-style .reset-progress-btn,
+body.pixel-style .shop-btn {
     box-shadow: 4px 4px 0px rgba(0,0,0,0.5) !important;
-}
-
-body.pixel-style .currency {
-    border-radius: 0px !important;
-    font-family: 'Press Start 2P', monospace !important;
-}
-
-body.pixel-style .world-header {
-    border-radius: 0px !important;
-}
-
-body.pixel-style .world-nav-btn {
-    border-radius: 0px !important;
-    box-shadow: 4px 4px 0px rgba(0,0,0,0.5) !important;
-}
-
-body.pixel-style .current-world-card {
-    border-radius: 0px !important;
-}
-
-body.pixel-style .current-world-name,
-body.pixel-style .world-property {
-    font-family: 'Press Start 2P', monospace !important;
 }
 
 body.pixel-style .level-badge {
-    border-radius: 0px !important;
     box-shadow: 2px 2px 0px rgba(0,0,0,0.5) !important;
-    font-family: 'Press Start 2P', monospace !important;
 }
 
 body.pixel-style .level-badge.current {
     box-shadow: 0 0 0px 3px var(--world-primary) !important;
 }
 
-body.pixel-style .quest-panel {
-    border-radius: 0px !important;
+body.pixel-style .btn:active,
+body.pixel-style .shop-btn:active,
+body.pixel-style .play-btn:active,
+body.pixel-style .world-nav-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.5) !important;
 }
 
-body.pixel-style .quest-target-display {
-    border-radius: 0px !important;
-    font-family: 'Press Start 2P', monospace !important;
-}
-
-body.pixel-style .stats-row {
-    border-radius: 0px !important;
-}
-
-body.pixel-style .stats-row span,
-body.pixel-style .combo-indicator {
-    font-family: 'Press Start 2P', monospace !important;
-}
-
-body.pixel-style .board-wrapper {
-    border-radius: 0px !important;
-}
-
-/* Ячейки игрового поля - ГЛАВНОЕ! */
+/* Ячейки - самое важное */
 body.pixel-style .cell {
     border-radius: 0px !important;
     transition: none !important;
     font-family: 'Press Start 2P', monospace !important;
-    font-size: 12px !important;
+    font-size: 11px !important;
     image-rendering: crisp-edges;
     image-rendering: pixelated;
 }
 
 @media (max-width: 600px) {
     body.pixel-style .cell {
-        font-size: 9px !important;
+        font-size: 8px !important;
     }
 }
 
@@ -191,36 +164,7 @@ body.pixel-style .cell.selected {
     transform: scale(0.95);
 }
 
-body.pixel-style .btn {
-    border-radius: 0px !important;
-    box-shadow: 4px 4px 0px rgba(0,0,0,0.5) !important;
-    font-family: 'Press Start 2P', monospace !important;
-}
-
-body.pixel-style .btn:active {
-    transform: translate(2px, 2px);
-    box-shadow: 2px 2px 0px rgba(0,0,0,0.5) !important;
-}
-
-body.pixel-style .exit-menu-btn,
-body.pixel-style .help-btn,
-body.pixel-style .reset-progress-btn,
-body.pixel-style .shop-btn {
-    border-radius: 0px !important;
-    box-shadow: 4px 4px 0px rgba(0,0,0,0.5) !important;
-    font-family: 'Press Start 2P', monospace !important;
-}
-
-body.pixel-style .progress-bar-bg {
-    border-radius: 0px !important;
-}
-
-body.pixel-style #worldExtraInfo {
-    border-radius: 0px !important;
-    font-family: 'Press Start 2P', monospace !important;
-}
-
-/* Модальные окна в пиксельном стиле */
+/* Модальные окна */
 body.pixel-style .modal,
 body.pixel-style .victory-card,
 body.pixel-style .shop-container,
@@ -229,43 +173,22 @@ body.pixel-style .tutorial-container {
     box-shadow: 8px 8px 0px rgba(0,0,0,0.5) !important;
 }
 
-body.pixel-style .modal .modal-title,
-body.pixel-style .victory-card .victory-title,
-body.pixel-style .modal #modalStats,
-body.pixel-style .victory-card .victory-stats {
-    font-family: 'Press Start 2P', monospace !important;
-}
-
-body.pixel-style .shop-container *,
-body.pixel-style .tutorial-container * {
-    font-family: 'Press Start 2P', monospace !important;
-}
-
-body.pixel-style .shop-item {
-    border-radius: 0px !important;
-}
-
-body.pixel-style .skin-preview {
+body.pixel-style .shop-item,
+body.pixel-style .skin-preview,
+body.pixel-style .shop-buy-btn,
+body.pixel-style .shop-close,
+body.pixel-style .tutorial-close,
+body.pixel-style .world-tutorial {
     border-radius: 0px !important;
 }
 
 body.pixel-style .shop-buy-btn,
 body.pixel-style .shop-close,
 body.pixel-style .tutorial-close {
-    border-radius: 0px !important;
     box-shadow: 4px 4px 0px rgba(0,0,0,0.5) !important;
 }
 
-body.pixel-style .world-tutorial {
-    border-radius: 0px !important;
-}
-
-body.pixel-style .world-tutorial h3,
-body.pixel-style .world-tutorial p {
-    font-family: 'Press Start 2P', monospace !important;
-}
-
-/* Убираем анимации в ретро-режиме */
+/* Убираем лишние анимации в пиксельном режиме */
 body.pixel-style .combo-indicator,
 body.pixel-style .cell.flower-bonus,
 body.pixel-style .cell.blackhole,
@@ -274,15 +197,15 @@ body.pixel-style .cell.match-fade {
 }
 
 body.pixel-style .cell.falling {
-    animation: fallGlidePixel 0.15s ease-out;
+    animation: fallGlidePixel 0.12s ease-out;
 }
 
 @keyframes fallGlidePixel {
-    from { transform: translateY(-20px); opacity: 0; }
+    from { transform: translateY(-15px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
 }
 
-/* ===== ОБЩИЕ СТИЛИ ===== */
+/* ===== ОБЩИЕ СТИЛИ (НЕ МЕНЯЮТСЯ) ===== */
 body::before {
     content: "";
     position: fixed;
@@ -934,7 +857,4 @@ body.world-space { background: radial-gradient(ellipse at 30% 40%, #0a0a2a 0%, #
     body.pixel-style .game-title { font-size: 0.9rem; }
     body.pixel-style .tab-btn { font-size: 0.55rem; }
     body.pixel-style .style-btn { font-size: 0.45rem; }
-    body.pixel-style .cell {
-        font-size: 9px !important;
-    }
 }
