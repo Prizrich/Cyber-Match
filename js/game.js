@@ -40,7 +40,11 @@ function addWorldMessage(msg) {
     let div = document.getElementById("worldExtraInfo");
     if (div) {
         div.innerHTML = `✨ ${msg} ✨`;
-        setTimeout(() => { if (div.innerHTML === `✨ ${msg} ✨`) div.innerHTML = WORLDS[currentWorld].extraInfo; }, 2000);
+        setTimeout(() => { 
+            if (div.innerHTML === `✨ ${msg} ✨`) {
+                div.innerHTML = WORLDS[currentWorld].extraInfo;
+            }
+        }, 2500);
     }
 }
 
