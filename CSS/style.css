@@ -781,3 +781,108 @@ body.world-space { background: radial-gradient(ellipse at 30% 40%, #0a0a2a 0%, #
     .tab-btn { font-size: 0.8rem; padding: 8px 15px; }
     .style-btn { font-size: 0.6rem; padding: 6px 12px; }
 }
+
+/* ===== ПИКСЕЛЬНЫЙ РЕЖИМ — ПОЛНОЕ ПЕРЕОПРЕДЕЛЕНИЕ ===== */
+body.pixel-style {
+    font-family: 'Press Start 2P', monospace !important;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+    image-rendering: pixelated;
+}
+
+/* ВСЕ элементы игры в пиксельном стиле */
+body.pixel-style .game-container,
+body.pixel-style .world-header,
+body.pixel-style .currency-bar,
+body.pixel-style .quest-panel,
+body.pixel-style .board-wrapper,
+body.pixel-style .stats-row,
+body.pixel-style .level-badge,
+body.pixel-style .world-nav-btn,
+body.pixel-style .current-world-card,
+body.pixel-style .btn,
+body.pixel-style .shop-btn,
+body.pixel-style .reset-progress-btn,
+body.pixel-style .ultima-btn,
+body.pixel-style .exit-menu-btn,
+body.pixel-style .help-btn {
+    border-radius: 0px !important;
+    box-shadow: 4px 4px 0px rgba(0,0,0,0.5) !important;
+}
+
+body.pixel-style .cell {
+    border-radius: 0px !important;
+    font-family: monospace !important;
+    font-size: calc(var(--cell-size) * 0.45) !important;
+}
+
+body.pixel-style .cell.selected {
+    border-width: 3px !important;
+    transform: scale(0.95);
+    box-shadow: inset 0 0 0 2px white !important;
+}
+
+/* Шрифты для всех текстовых элементов */
+body.pixel-style .game-title,
+body.pixel-style .game-subtitle,
+body.pixel-style .tab-btn,
+body.pixel-style .sound-option label,
+body.pixel-style .play-btn,
+body.pixel-style .info-text,
+body.pixel-style .currency,
+body.pixel-style .current-world-name,
+body.pixel-style .world-property,
+body.pixel-style .level-badge,
+body.pixel-style .quest-target-display,
+body.pixel-style .stats-row span,
+body.pixel-style .combo-indicator,
+body.pixel-style .btn,
+body.pixel-style .modal .modal-title,
+body.pixel-style .victory-card .victory-title,
+body.pixel-style .shop-container *,
+body.pixel-style .world-tutorial h3,
+body.pixel-style .world-tutorial p {
+    font-family: 'Press Start 2P', monospace !important;
+    letter-spacing: 0px !important;
+}
+
+/* Убираем blur и скругления */
+body.pixel-style .game-container,
+body.pixel-style .start-container {
+    backdrop-filter: none !important;
+    box-shadow: 8px 8px 0px rgba(0,0,0,0.5) !important;
+}
+
+body.pixel-style .start-container {
+    border-radius: 0px !important;
+}
+
+body.pixel-style .progress-bar-bg {
+    border-radius: 0px !important;
+    height: 8px !important;
+}
+
+body.pixel-style #worldExtraInfo {
+    border-radius: 0px !important;
+    font-size: 0.5rem !important;
+}
+
+/* Слоты (фишки) в пиксельном стиле — квадратные */
+body.pixel-style .slot-cell {
+    border-radius: 0px !important;
+    box-shadow: 4px 4px 0px #6b3a1a !important;
+}
+
+body.pixel-style .board {
+    gap: 2px !important;
+}
+
+/* Кнопки без скруглений */
+body.pixel-style button {
+    border-radius: 0px !important;
+}
+
+body.pixel-style button:active {
+    transform: translate(2px, 2px) !important;
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.5) !important;
+}
