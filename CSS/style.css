@@ -57,64 +57,127 @@ body.pixel-style {
 }
 
 /* Принудительный пиксельный шрифт для ВСЕХ элементов */
+body.pixel-style,
 body.pixel-style *,
 body.pixel-style *::before,
 body.pixel-style *::after {
     font-family: 'Press Start 2P', monospace !important;
 }
 
-/* Все контейнеры без скруглений */
-body.pixel-style .start-container,
-body.pixel-style .game-container,
-body.pixel-style .modal,
-body.pixel-style .victory-card,
-body.pixel-style .shop-container,
-body.pixel-style .tutorial-container,
-body.pixel-style .world-header,
-body.pixel-style .currency-bar,
-body.pixel-style .quest-panel,
-body.pixel-style .board-wrapper,
-body.pixel-style .stats-row,
-body.pixel-style .tabs,
-body.pixel-style .sound-settings,
-body.pixel-style .shop-item,
-body.pixel-style .world-tutorial {
+/* Главное меню в пиксельном стиле */
+body.pixel-style .start-container {
     border-radius: 0px !important;
     box-shadow: 8px 8px 0px rgba(0,0,0,0.5) !important;
     border-width: 4px !important;
     backdrop-filter: none !important;
 }
 
-/* Все кнопки квадратные */
-body.pixel-style button,
-body.pixel-style .btn,
-body.pixel-style .shop-btn,
+body.pixel-style .game-title,
+body.pixel-style .game-subtitle,
+body.pixel-style .tab-btn,
+body.pixel-style .sound-option label,
 body.pixel-style .play-btn,
-body.pixel-style .world-nav-btn,
-body.pixel-style .exit-menu-btn,
-body.pixel-style .help-btn,
-body.pixel-style .reset-progress-btn,
-body.pixel-style .shop-close,
-body.pixel-style .tutorial-close {
+body.pixel-style .info-text,
+body.pixel-style .style-btn {
+    font-family: 'Press Start 2P', monospace !important;
+}
+
+body.pixel-style .tabs {
+    border-radius: 0px !important;
+}
+
+body.pixel-style .tab-btn {
+    border-radius: 0px !important;
+}
+
+body.pixel-style .sound-settings {
+    border-radius: 0px !important;
+}
+
+body.pixel-style .style-btn {
+    border-radius: 0px !important;
+}
+
+body.pixel-style .play-btn {
+    border-radius: 0px !important;
+}
+
+/* ===== ИГРОВОЙ КОНТЕЙНЕР В ПИКСЕЛЬНОМ СТИЛЕ ===== */
+body.pixel-style .game-container {
+    border-radius: 0px !important;
+    box-shadow: 8px 8px 0px rgba(0,0,0,0.5) !important;
+    border-width: 4px !important;
+    backdrop-filter: none !important;
+}
+
+body.pixel-style .currency-bar {
     border-radius: 0px !important;
     box-shadow: 4px 4px 0px rgba(0,0,0,0.5) !important;
-    transition: none !important;
 }
 
-body.pixel-style button:active,
-body.pixel-style .btn:active,
-body.pixel-style .shop-btn:active,
-body.pixel-style .play-btn:active {
-    transform: translate(2px, 2px);
+body.pixel-style .currency {
+    border-radius: 0px !important;
+    font-family: 'Press Start 2P', monospace !important;
+}
+
+body.pixel-style .world-header {
+    border-radius: 0px !important;
+}
+
+body.pixel-style .world-nav-btn {
+    border-radius: 0px !important;
+    box-shadow: 4px 4px 0px rgba(0,0,0,0.5) !important;
+}
+
+body.pixel-style .current-world-card {
+    border-radius: 0px !important;
+}
+
+body.pixel-style .current-world-name,
+body.pixel-style .world-property {
+    font-family: 'Press Start 2P', monospace !important;
+}
+
+body.pixel-style .level-badge {
+    border-radius: 0px !important;
     box-shadow: 2px 2px 0px rgba(0,0,0,0.5) !important;
+    font-family: 'Press Start 2P', monospace !important;
 }
 
-/* Ячейки игрового поля */
+body.pixel-style .level-badge.current {
+    box-shadow: 0 0 0px 3px var(--world-primary) !important;
+}
+
+body.pixel-style .quest-panel {
+    border-radius: 0px !important;
+}
+
+body.pixel-style .quest-target-display {
+    border-radius: 0px !important;
+    font-family: 'Press Start 2P', monospace !important;
+}
+
+body.pixel-style .stats-row {
+    border-radius: 0px !important;
+}
+
+body.pixel-style .stats-row span,
+body.pixel-style .combo-indicator {
+    font-family: 'Press Start 2P', monospace !important;
+}
+
+body.pixel-style .board-wrapper {
+    border-radius: 0px !important;
+}
+
+/* Ячейки игрового поля - ГЛАВНОЕ! */
 body.pixel-style .cell {
     border-radius: 0px !important;
     transition: none !important;
-    font-size: 12px !important;
     font-family: 'Press Start 2P', monospace !important;
+    font-size: 12px !important;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
 }
 
 @media (max-width: 600px) {
@@ -128,50 +191,78 @@ body.pixel-style .cell.selected {
     transform: scale(0.95);
 }
 
-body.pixel-style .level-badge.current {
-    box-shadow: 0 0 0px 3px var(--world-primary) !important;
+body.pixel-style .btn {
+    border-radius: 0px !important;
+    box-shadow: 4px 4px 0px rgba(0,0,0,0.5) !important;
+    font-family: 'Press Start 2P', monospace !important;
+}
+
+body.pixel-style .btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.5) !important;
+}
+
+body.pixel-style .exit-menu-btn,
+body.pixel-style .help-btn,
+body.pixel-style .reset-progress-btn,
+body.pixel-style .shop-btn {
+    border-radius: 0px !important;
+    box-shadow: 4px 4px 0px rgba(0,0,0,0.5) !important;
+    font-family: 'Press Start 2P', monospace !important;
 }
 
 body.pixel-style .progress-bar-bg {
-    border-radius: 0px;
+    border-radius: 0px !important;
 }
 
-body.pixel-style .sound-slider::-webkit-slider-thumb {
-    border-radius: 0px;
+body.pixel-style #worldExtraInfo {
+    border-radius: 0px !important;
+    font-family: 'Press Start 2P', monospace !important;
+}
+
+/* Модальные окна в пиксельном стиле */
+body.pixel-style .modal,
+body.pixel-style .victory-card,
+body.pixel-style .shop-container,
+body.pixel-style .tutorial-container {
+    border-radius: 0px !important;
+    box-shadow: 8px 8px 0px rgba(0,0,0,0.5) !important;
+}
+
+body.pixel-style .modal .modal-title,
+body.pixel-style .victory-card .victory-title,
+body.pixel-style .modal #modalStats,
+body.pixel-style .victory-card .victory-stats {
+    font-family: 'Press Start 2P', monospace !important;
+}
+
+body.pixel-style .shop-container *,
+body.pixel-style .tutorial-container * {
+    font-family: 'Press Start 2P', monospace !important;
+}
+
+body.pixel-style .shop-item {
+    border-radius: 0px !important;
 }
 
 body.pixel-style .skin-preview {
     border-radius: 0px !important;
 }
 
-/* Все тексты */
-body.pixel-style .game-title,
-body.pixel-style .game-subtitle,
-body.pixel-style .tab-btn,
-body.pixel-style .sound-option label,
-body.pixel-style .play-btn,
-body.pixel-style .info-text,
-body.pixel-style .currency,
-body.pixel-style .current-world-name,
-body.pixel-style .world-property,
-body.pixel-style .level-badge,
-body.pixel-style .quest-target-display,
-body.pixel-style .stats-row span,
-body.pixel-style .combo-indicator,
-body.pixel-style .modal .modal-title,
-body.pixel-style .victory-card .victory-title,
-body.pixel-style .shop-container *,
+body.pixel-style .shop-buy-btn,
+body.pixel-style .shop-close,
+body.pixel-style .tutorial-close {
+    border-radius: 0px !important;
+    box-shadow: 4px 4px 0px rgba(0,0,0,0.5) !important;
+}
+
+body.pixel-style .world-tutorial {
+    border-radius: 0px !important;
+}
+
 body.pixel-style .world-tutorial h3,
-body.pixel-style .world-tutorial p,
-body.pixel-style #worldExtraInfo,
-body.pixel-style #questProgressDisplay,
-body.pixel-style #score,
-body.pixel-style #moves,
-body.pixel-style #comboDisplay,
-body.pixel-style .skin-current,
-body.pixel-style .shop-buy-btn {
+body.pixel-style .world-tutorial p {
     font-family: 'Press Start 2P', monospace !important;
-    letter-spacing: 0px !important;
 }
 
 /* Убираем анимации в ретро-режиме */
