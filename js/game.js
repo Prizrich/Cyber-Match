@@ -418,24 +418,59 @@ function generateValidBoard() {
         }
     }
     
+    // Генерируем поле БЕЗ комбинаций
+    let maxAttempts = 100;
+    let attempts = 0;
+    
     do {
         for (let r = 0; r < 8; r++) {
             for (let c = 0; c < 8; c++) {
                 let available = [...emojis];
+                
+                // Проверка горизонтали
                 if (c >= 2 && boardState[r][c-1] === boardState[r][c-2]) {
                     available = available.filter(e => e !== boardState[r][c-1]);
                 }
+                // Проверка вертикали
                 if (r >= 2 && boardState[r-1][c] === boardState[r-2][c]) {
                     available = available.filter(e => e !== boardState[r-1][c]);
                 }
+                
                 if (available.length === 0) {
                     available = [...emojis];
                 }
+                
                 boardState[r][c] = available[Math.floor(Math.random() * available.length)];
             }
         }
+        attempts++;
+        if (attempts > maxAttempts) break;
     } while (hasMatches().length > 0);
+    
+    // Если всё-таки есть комбинации — удаляем их без награды
+    let finalMatches = hasMatches();
+    if (finalMatches.length > 0) {
+        for (let m of finalMatches) {
+            boardState[m.r][m.c] = null;
+        }
+        applyGravityAndRefill(false);
+    }
 }
+
+function sanitizeBoard() {
+    let matches = hasMatches();
+    let safeGuard = 0;
+    
+    while (matches.length > 0 && safeGuard < 20) {
+        for (let m of matches) {
+            boardState[m.r][m.c] = null;
+        }
+        applyGravityAndRefill(false);
+        matches = hasMatches();
+        safeGuard++;
+    }
+}
+
 
 function shuffleBoard() {
     generateValidBoard();
