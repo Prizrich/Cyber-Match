@@ -194,7 +194,7 @@ function addQuestProgress(matchedCells) {
     }
 }
 
-function applyGravityAndRefill() {
+function applyGravityAndRefill(checkForMatches = false) {
     let emojis = WORLDS[currentWorld].emojis;
     let inverted = gravityInverted && currentWorld === "space";
     
@@ -202,7 +202,7 @@ function applyGravityAndRefill() {
         let col = [];
         
         if (!inverted) {
-            // Нормальная гравитация: собираем все существующие фишки сверху вниз
+            // Нормальная гравитация
             for (let r = 7; r >= 0; r--) {
                 if (boardState[r][c]) col.push(boardState[r][c]);
             }
@@ -215,12 +215,10 @@ function applyGravityAndRefill() {
                 boardState[r][c] = col[r];
             }
         } else {
-            // Инвертированная гравитация: фишки "всплывают" вверх
-            // Собираем существующие фишки снизу вверх
+            // Инвертированная гравитация
             for (let r = 0; r < 8; r++) {
                 if (boardState[r][c]) col.push(boardState[r][c]);
             }
-            // Заполняем пустоты новыми фишками снизу
             while (col.length < 8) {
                 col.unshift(emojis[Math.floor(Math.random() * emojis.length)]);
             }
@@ -235,10 +233,18 @@ function applyGravityAndRefill() {
         c.classList.add("falling");
         setTimeout(() => c.classList.remove("falling"), 200);
     });
+    
+    // НЕ ПРОВЕРЯЕМ КОМБИНАЦИИ ПОСЛЕ ПАДЕНИЯ - только если явно вызвано
+    if (checkForMatches) {
+        let matches = hasMatches();
+        if (matches.length > 0) {
+            setTimeout(() => processMatchesAndCascade(matches), 100);
+        }
+    }
 }
-
 function processMatchesAndCascade(matchesArray) {
     if (!gameActive) return;
+    
     if (!matchesArray.length) { 
         isLocking = false; 
         selectedCell = null; 
@@ -265,35 +271,50 @@ function processMatchesAndCascade(matchesArray) {
     addQuestProgress(matchesArray);
     applyWorldMechanicsOnMatch(matchesArray);
     
-    // Обработка удаления совпавших клеток (с учётом ржавчины в стимпанке)
+    // Обработка удаления совпавших клеток (с учётом ржавчины)
     for (let m of matchesArray) {
-        let cellValue = boardState[m.r][m.c];
-        
-        // Проверка на ржавчину в мире стимпанк
         if (currentWorld === "steampunk" && worldSpecificData.rustedCells) {
             let rustIndex = worldSpecificData.rustedCells.findIndex(rust => rust.r === m.r && rust.c === m.c);
             
             if (rustIndex !== -1) {
-                // Это ржавая клетка - уменьшаем счётчик прочности
                 worldSpecificData.rustedCells[rustIndex].hits++;
                 if (worldSpecificData.rustedCells[rustIndex].hits >= 2) {
-                    // Второй удар - удаляем клетку
                     worldSpecificData.rustedCells.splice(rustIndex, 1);
                     boardState[m.r][m.c] = null;
-                    addWorldMessage("🦾 Ржавчина уничтожена!");
+                    addWorldMessage("⚙️ Ржавчина уничтожена!");
                 } else {
-                    // Первый удар - просто меняем визуал (убираем класс rusted, но оставляем клетку)
-                    addWorldMessage("🦾 Ржавчина ослабла! Нужен ещё удар!");
-                    // Клетка остаётся, но теряет визуал ржавчины
-                    // renderBoard() обновит отображение
+                    addWorldMessage("⚙️ Ржавчина ослабла! Нужен ещё удар!");
                 }
-                continue; // Пропускаем обычное удаление
+                continue;
             }
         }
-        
-        // Обычное удаление клетки (не ржавой)
         boardState[m.r][m.c] = null;
     }
+    
+    // Анимация исчезновения
+    matchesArray.forEach(m => { 
+        let el = document.querySelector(`[data-row='${m.r}'][data-col='${m.c}']`); 
+        if (el) el.classList.add("match-fade"); 
+    });
+    
+    playSound("match");
+    
+    setTimeout(() => {
+        // Просто падаем, НЕ проверяем новые комбинации!
+        applyGravityAndRefill(false);  // ← false означает "не проверять комбинации"
+        
+        if (currentWorld === "space") applyBlackhole();
+        if (currentWorld === "steampunk") applyRust();
+        
+        combo = activeStartCombo;
+        updateUI();
+        applyCyberOverload();
+        applySpaceGravity();
+        isLocking = false;
+        selectedCell = null;
+        checkGameEnd();
+    }, 220);
+}
     
     // Анимация исчезновения
     matchesArray.forEach(m => { 
@@ -323,19 +344,23 @@ function trySwap(r1,c1, r2,c2) {
     boardState[r1][c1] = boardState[r2][c2];
     boardState[r2][c2] = temp;
     let matches = hasMatches();
+    
     if (matches.length > 0) {
+        // Ход игрока создал комбинацию
         if (movesLeft > 0) movesLeft--;
         updateUI();
         renderBoard();
-        processMatchesAndCascade(matches);
+        processMatchesAndCascade(matches);  // Обрабатываем комбинацию
         return true;
     } else {
+        // Откат обмена
         temp = boardState[r1][c1];
         boardState[r1][c1] = boardState[r2][c2];
         boardState[r2][c2] = temp;
         renderBoard();
         isLocking = false;
         selectedCell = null;
+        addWorldMessage("❌ Так нельзя! Нет комбинации!");
         return false;
     }
 }
