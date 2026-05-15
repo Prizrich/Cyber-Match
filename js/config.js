@@ -11,44 +11,44 @@ const WORLDS = {
 
 const WORLD_QUESTS = {
     forest: [
-        { icon: "🍄", target: 12, desc: "Собери 20 🍄" },
-        { icon: "🐺", target: 10, desc: "Собери 20 🐺" },
-        { icon: "🍃", target: 15, desc: "Собери 20 🍃" },
-        { icon: "🌲", target: 8, desc: "Собери 20 🌲" },
-        { icon: "🍄", target: 14, desc: "Собери 25 🍄" },
-        { icon: "🐺", target: 12, desc: "Собери 25 🐺" },
-        { icon: "🍃", target: 20, desc: "Собери 25 🍃" },
-        { icon: "🌲", target: 10, desc: "Собери 40 🌲 (БОСС)" }
+        { icon: "🍄", target: 20, desc: "Собери 20 🍄" },
+        { icon: "🐺", target: 20, desc: "Собери 20 🐺" },
+        { icon: "🍃", target: 20, desc: "Собери 20 🍃" },
+        { icon: "🌲", target: 20, desc: "Собери 20 🌲" },
+        { icon: "🍄", target: 25, desc: "Собери 25 🍄" },
+        { icon: "🐺", target: 25, desc: "Собери 25 🐺" },
+        { icon: "🍃", target: 25, desc: "Собери 25 🍃" },
+        { icon: "🌲", target: 40, desc: "Собери 40 🌲 (БОСС)" }
     ],
     steampunk: [
-        { icon: "⚙️", target: 12, desc: "Собери 30 ⚙️" },
-        { icon: "🔧", target: 12, desc: "Собери 30 🔧" },
-        { icon: "🚂", target: 14, desc: "Собери 30 🚂" },
-        { icon: "🕰️", target: 15, desc: "Собери 30 🕰️" },
-        { icon: "⚙️", target: 14, desc: "Собери 35 ⚙️" },
-        { icon: "🔧", target: 12, desc: "Собери 35 🔧" },
-        { icon: "🚂", target: 18, desc: "Собери 35 🚂" },
-        { icon: "🕰️", target: 10, desc: "Собери 45 🕰️ (БОСС)" }
+        { icon: "⚙️", target: 30, desc: "Собери 30 ⚙️" },
+        { icon: "🔧", target: 30, desc: "Собери 30 🔧" },
+        { icon: "🚂", target: 30, desc: "Собери 30 🚂" },
+        { icon: "🕰️", target: 30, desc: "Собери 30 🕰️" },
+        { icon: "⚙️", target: 35, desc: "Собери 35 ⚙️" },
+        { icon: "🔧", target: 35, desc: "Собери 35 🔧" },
+        { icon: "🚂", target: 35, desc: "Собери 35 🚂" },
+        { icon: "🕰️", target: 45, desc: "Собери 45 🕰️ (БОСС)" }
     ],
     cyber: [
-        { icon: "🤖", target: 12, desc: "Собери 40 🤖" },
-        { icon: "👾", target: 13, desc: "Собери 40 👾" },
-        { icon: "🛸", target: 14, desc: "Собери 40 🛸" },
-        { icon: "💻", target: 16, desc: "Собери 40 💻" },
-        { icon: "🤖", target: 15, desc: "Собери 45 🤖" },
-        { icon: "👾", target: 13, desc: "Собери 45 👾" },
-        { icon: "🛸", target: 20, desc: "Собери 45 🛸" },
-        { icon: "💻", target: 12, desc: "Собери 50 💻 (БОСС)" }
+        { icon: "🤖", target: 40, desc: "Собери 40 🤖" },
+        { icon: "👾", target: 40, desc: "Собери 40 👾" },
+        { icon: "🛸", target: 40, desc: "Собери 40 🛸" },
+        { icon: "💻", target: 40, desc: "Собери 40 💻" },
+        { icon: "🤖", target: 45, desc: "Собери 45 🤖" },
+        { icon: "👾", target: 45, desc: "Собери 45 👾" },
+        { icon: "🛸", target: 45, desc: "Собери 45 🛸" },
+        { icon: "💻", target: 50, desc: "Собери 50 💻 (БОСС)" }
     ],
     space: [
-        { icon: "🪐", target: 10, desc: "Собери 45 🪐" },
-        { icon: "☄️", target: 12, desc: "Собери 45 ☄️" },
-        { icon: "🚀", target: 14, desc: "Собери 45 🚀" },
-        { icon: "🌌", target: 14, desc: "Собери 45 🌌" },
-        { icon: "🪐", target: 16, desc: "Собери 50 🪐" },
-        { icon: "☄️", target: 11, desc: "Собери 50 ☄️" },
-        { icon: "🚀", target: 18, desc: "Собери 50 🚀" },
-        { icon: "🌌", target: 18, desc: "Собери 55 🌌 (ФИНАЛ)" }
+        { icon: "🪐", target: 45, desc: "Собери 45 🪐" },
+        { icon: "☄️", target: 45, desc: "Собери 45 ☄️" },
+        { icon: "🚀", target: 45, desc: "Собери 45 🚀" },
+        { icon: "🌌", target: 45, desc: "Собери 45 🌌" },
+        { icon: "🪐", target: 50, desc: "Собери 50 🪐" },
+        { icon: "☄️", target: 50, desc: "Собери 50 ☄️" },
+        { icon: "🚀", target: 50, desc: "Собери 50 🚀" },
+        { icon: "🌌", target: 55, desc: "Собери 55 🌌 (ФИНАЛ)" }
     ]
 };
 
