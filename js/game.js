@@ -1,5 +1,13 @@
-// Основная игровая логика
+// Основная игровая логика с конечным автоматом
 
+// Состояния игры
+const GAME_STATE = {
+    WAIT_FOR_INPUT: "WAIT_FOR_INPUT",      // Ждём действия игрока
+    ANIMATING_FALL: "ANIMATING_FALL",      // Фишки падают
+    CHECK_MATCHES: "CHECK_MATCHES"         // Проверяем комбинации
+};
+
+let gameState = GAME_STATE.WAIT_FOR_INPUT;
 let uiElements = {};
 
 function setUIElements(elements) {
@@ -40,11 +48,7 @@ function addWorldMessage(msg) {
     let div = document.getElementById("worldExtraInfo");
     if (div) {
         div.innerHTML = `✨ ${msg} ✨`;
-        setTimeout(() => { 
-            if (div.innerHTML === `✨ ${msg} ✨`) {
-                div.innerHTML = WORLDS[currentWorld].extraInfo;
-            }
-        }, 2500);
+        setTimeout(() => { if (div.innerHTML === `✨ ${msg} ✨`) div.innerHTML = WORLDS[currentWorld].extraInfo; }, 2500);
     }
 }
 
@@ -145,7 +149,7 @@ function applySpaceGravity() {
         moveCounter = 0;
         gravityInverted = !gravityInverted;
         addWorldMessage(gravityInverted ? "🌀 ГРАВИТАЦИЯ ИНВЕРТИРОВАНА! Блоки летят ВВЕРХ!" : "🌀 ГРАВИТАЦИЯ ВОССТАНОВЛЕНА!");
-        applyGravityAndRefill(false);
+        startFallSequence();
     }
 }
 
@@ -196,8 +200,40 @@ function addQuestProgress(matchedCells) {
     }
 }
 
-// ОСНОВНАЯ ФУНКЦИЯ ПАДЕНИЯ С УМНЫМ ФИЛЬТРОМ
-function applyGravityAndRefill(checkForMatches = false) {
+// ========== УМНАЯ ГЕНЕРАЦИЯ НОВЫХ ФИШЕК (LOOK-AHEAD) ==========
+function getSafeNewEmoji(emojis, boardCol, colIndex, rowPos, inverted) {
+    let available = [...emojis];
+    let r = !inverted ? 7 - rowPos : rowPos;
+    
+    // Проверка вертикали (смотрим вниз на 2 клетки)
+    if (rowPos >= 2 && boardCol[rowPos-1] === boardCol[rowPos-2]) {
+        available = available.filter(e => e !== boardCol[rowPos-1]);
+    }
+    
+    // Проверка горизонтали слева
+    if (colIndex >= 2 && boardState[r] && boardState[r][colIndex-1] === boardState[r][colIndex-2]) {
+        available = available.filter(e => e !== boardState[r][colIndex-1]);
+    }
+    
+    // Проверка горизонтали справа (смотрим будущие соседей)
+    if (colIndex <= 5 && boardState[r] && boardState[r][colIndex+1] === boardState[r][colIndex+2]) {
+        available = available.filter(e => e !== boardState[r][colIndex+1]);
+    }
+    
+    // Проверка креста (сосед сверху и снизу)
+    if (rowPos >= 1 && rowPos + 1 < 8 && boardCol[rowPos-1] === boardCol[rowPos+1]) {
+        available = available.filter(e => e !== boardCol[rowPos-1]);
+    }
+    
+    if (available.length === 0) {
+        available = [...emojis];
+    }
+    
+    return available[Math.floor(Math.random() * available.length)];
+}
+
+// ========== ФАЗА 1: ПАДЕНИЕ ФИШЕК ==========
+function applyGravityAndRefill() {
     let emojis = WORLDS[currentWorld].emojis;
     let inverted = gravityInverted && currentWorld === "space";
     
@@ -215,34 +251,10 @@ function applyGravityAndRefill(checkForMatches = false) {
             }
         }
         
-        // Заполняем пустоты новыми фишками с проверкой на комбинации
+        // Заполняем пустоты новыми фишками с умной проверкой
         while (col.length < 8) {
-            let pos = col.length;
-            let r = !inverted ? 7 - pos : pos;
-            
-            // Какие символы доступны?
-            let available = [...emojis];
-            
-            // Проверка горизонтали: создаст ли новая фишка комбо с соседями слева?
-            if (c >= 2 && boardState[r] && boardState[r][c-1] === boardState[r][c-2]) {
-                available = available.filter(e => e !== boardState[r][c-1]);
-            }
-            // Проверка вертикали: создаст ли новая фишка комбо с фишками над/под собой?
-            if (pos >= 2 && col[pos-1] === col[pos-2]) {
-                available = available.filter(e => e !== col[pos-1]);
-            }
-            // Проверка будущей вертикали (с уже существующими фишками выше)
-            if (pos >= 1 && pos + 1 < 8 && boardState[r + (inverted ? -1 : 1)] && 
-                boardState[r + (inverted ? -1 : 1)][c] === col[pos-1]) {
-                available = available.filter(e => e !== col[pos-1]);
-            }
-            
-            // Если всё заблокировано - снимаем ограничения
-            if (available.length === 0) {
-                available = [...emojis];
-            }
-            
-            let newEmoji = available[Math.floor(Math.random() * available.length)];
+            let rowPos = col.length;
+            let newEmoji = getSafeNewEmoji(emojis, col, c, rowPos, inverted);
             col.push(newEmoji);
         }
         
@@ -259,47 +271,35 @@ function applyGravityAndRefill(checkForMatches = false) {
     }
     
     renderBoard();
-    document.querySelectorAll(".cell").forEach(c => {
-        c.classList.add("falling");
-        setTimeout(() => c.classList.remove("falling"), 200);
-    });
-    
-    // Убираем комбинации, которые всё-таки могли образоваться (без награды)
+    playSound("match");
+}
+
+// ========== ФАЗА 2: ПРОВЕРКА И УДАЛЕНИЕ МАТЧЕЙ ==========
+function processMatchesAndAward() {
     let matches = hasMatches();
-    if (matches.length > 0) {
-        for (let m of matches) {
-            boardState[m.r][m.c] = null;
-        }
-        setTimeout(() => applyGravityAndRefill(false), 100);
+    
+    if (matches.length === 0) {
+        // Нет больше комбинаций - возвращаем контроль игроку
+        gameState = GAME_STATE.WAIT_FOR_INPUT;
+        combo = activeStartCombo;
+        updateUI();
+        applyCyberOverload();
+        applySpaceGravity();
+        isLocking = false;
+        selectedCell = null;
+        checkGameEnd();
         return;
     }
     
-    if (checkForMatches) {
-        let matchesAfter = hasMatches();
-        if (matchesAfter.length > 0) {
-            setTimeout(() => processMatchesAndCascade(matchesAfter), 100);
-        }
-    }
-}
-
-function processMatchesAndCascade(matchesArray) {
-    if (!gameActive) return;
-    
-    if (!matchesArray.length) { 
-        isLocking = false; 
-        selectedCell = null; 
-        checkGameEnd(); 
-        return; 
-    }
-    
-    let bonus = getMatchBonus(matchesArray);
+    // Есть комбинации - начисляем очки
+    let bonus = getMatchBonus(matches);
     if (bonus.comboIncrease > 0) { 
         combo += bonus.comboIncrease; 
         updateUI();
     }
     
     let points = 0;
-    for (let m of matchesArray) {
+    for (let m of matches) {
         let add = SCORE_PER_ELEMENT * combo;
         if (boardState[m.r][m.c] === "🌸") add = Math.floor(add * 1.5);
         if (activeDoubleScore) add *= 2;
@@ -308,11 +308,11 @@ function processMatchesAndCascade(matchesArray) {
     score += points;
     updateUI();
     
-    addQuestProgress(matchesArray);
-    applyWorldMechanicsOnMatch(matchesArray);
+    addQuestProgress(matches);
+    applyWorldMechanicsOnMatch(matches);
     
-    // Обработка удаления совпавших клеток (с учётом ржавчины)
-    for (let m of matchesArray) {
+    // Удаляем совпавшие клетки (с учётом ржавчины)
+    for (let m of matches) {
         if (currentWorld === "steampunk" && worldSpecificData.rustedCells) {
             let rustIndex = worldSpecificData.rustedCells.findIndex(rust => rust.r === m.r && rust.c === m.c);
             
@@ -332,73 +332,134 @@ function processMatchesAndCascade(matchesArray) {
     }
     
     // Анимация исчезновения
-    matchesArray.forEach(m => { 
+    matches.forEach(m => { 
         let el = document.querySelector(`[data-row='${m.r}'][data-col='${m.c}']`); 
         if (el) el.classList.add("match-fade"); 
     });
     
-    playSound("match");
+    playSound("win");
     
+    // Запускаем падение новых фишек
     setTimeout(() => {
-        applyGravityAndRefill(false);
+        startFallSequence();
+    }, 200);
+}
+
+// ========== ОСНОВНОЙ ЦИКЛ: ПАДЕНИЕ → ПРОВЕРКА → ПАДЕНИЕ → ... ==========
+function startFallSequence() {
+    gameState = GAME_STATE.ANIMATING_FALL;
+    
+    // Применяем гравитацию и заполняем пустоты
+    applyGravityAndRefill();
+    
+    // Ждём окончания анимации падения
+    setTimeout(() => {
+        gameState = GAME_STATE.CHECK_MATCHES;
         
+        // Применяем спецэффекты миров
         if (currentWorld === "space") applyBlackhole();
         if (currentWorld === "steampunk") applyRust();
         
-        combo = activeStartCombo;
-        updateUI();
-        applyCyberOverload();
-        applySpaceGravity();
-        isLocking = false;
-        selectedCell = null;
-        checkGameEnd();
-    }, 220);
+        // Проверяем и обрабатываем комбинации
+        processMatchesAndAward();
+    }, 200);
 }
 
-function trySwap(r1,c1, r2,c2) {
+// ========== ОБМЕН ФИШЕК ОТ ИГРОКА ==========
+function trySwap(r1, c1, r2, c2) {
+    if (gameState !== GAME_STATE.WAIT_FOR_INPUT) {
+        addWorldMessage("⏳ Подождите, идёт обработка...");
+        return false;
+    }
+    
+    // Пробуем обмен
     let temp = boardState[r1][c1];
     boardState[r1][c1] = boardState[r2][c2];
     boardState[r2][c2] = temp;
+    
     let matches = hasMatches();
     
     if (matches.length > 0) {
+        // Успешный ход
         if (movesLeft > 0) movesLeft--;
         updateUI();
         renderBoard();
-        processMatchesAndCascade(matches);
+        
+        playSound("click");
+        
+        // Запускаем цепочку: удаление комбинаций → падение → проверка
+        gameState = GAME_STATE.CHECK_MATCHES;
+        
+        // Начисляем очки за комбинацию и запускаем падение
+        let bonus = getMatchBonus(matches);
+        if (bonus.comboIncrease > 0) { 
+            combo += bonus.comboIncrease; 
+            updateUI();
+        }
+        
+        let points = 0;
+        for (let m of matches) {
+            let add = SCORE_PER_ELEMENT * combo;
+            if (boardState[m.r][m.c] === "🌸") add = Math.floor(add * 1.5);
+            if (activeDoubleScore) add *= 2;
+            points += add;
+        }
+        score += points;
+        updateUI();
+        
+        addQuestProgress(matches);
+        applyWorldMechanicsOnMatch(matches);
+        
+        // Удаляем совпавшие клетки
+        for (let m of matches) {
+            boardState[m.r][m.c] = null;
+        }
+        
+        matches.forEach(m => { 
+            let el = document.querySelector(`[data-row='${m.r}'][data-col='${m.c}']`); 
+            if (el) el.classList.add("match-fade"); 
+        });
+        
+        playSound("win");
+        
+        // Запускаем падение и дальнейшую проверку
+        setTimeout(() => {
+            startFallSequence();
+        }, 200);
+        
         return true;
     } else {
+        // Откат обмена
         temp = boardState[r1][c1];
         boardState[r1][c1] = boardState[r2][c2];
         boardState[r2][c2] = temp;
         renderBoard();
-        isLocking = false;
-        selectedCell = null;
         addWorldMessage("❌ Нет комбинации!");
         return false;
     }
 }
 
-function handleCellClick(r,c) {
+function handleCellClick(r, c) {
+    if (gameState !== GAME_STATE.WAIT_FOR_INPUT) return;
     if (!gameActive || isLocking || movesLeft <= 0) return;
     if (worldSpecificData.invisibleCells?.some(cell => cell.r === r && cell.c === c)) return;
     playSound("click");
     
     if (selectedCell === null) {
         document.querySelectorAll(".cell.selected").forEach(el => el.classList.remove("selected"));
-        selectedCell = {r,c};
+        selectedCell = { r, c };
         let el = document.querySelector(`[data-row='${r}'][data-col='${c}']`);
         if (el) el.classList.add("selected");
     } else {
         let prev = document.querySelector(`[data-row='${selectedCell.r}'][data-col='${selectedCell.c}']`);
         if (prev) prev.classList.remove("selected");
         let dr = Math.abs(r - selectedCell.r), dc = Math.abs(c - selectedCell.c);
+        
         if ((dr === 1 && dc === 0) || (dr === 0 && dc === 1)) {
-            isLocking = true;
             trySwap(selectedCell.r, selectedCell.c, r, c);
             selectedCell = null;
         } else {
-            selectedCell = {r,c};
+            selectedCell = { r, c };
             let newEl = document.querySelector(`[data-row='${r}'][data-col='${c}']`);
             if (newEl) newEl.classList.add("selected");
         }
@@ -409,20 +470,28 @@ function renderBoard() {
     let boardEl = document.getElementById("board");
     if (!boardEl) return;
     boardEl.innerHTML = "";
-    for (let r=0; r<8; r++) {
-        for (let c=0; c<8; c++) {
+    for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
             let cell = document.createElement("div");
             cell.className = "cell";
             cell.dataset.row = r;
             cell.dataset.col = c;
             let val = boardState[r][c] || "?";
             cell.innerText = val;
-            if (worldSpecificData.invisibleCells?.some(cell => cell.r === r && cell.c === c)) { cell.classList.add("invisible"); cell.innerText = "???"; }
-            if (worldSpecificData.rustedCells?.some(rust => rust.r === r && rust.c === c)) cell.classList.add("rusted");
-            if (currentWorld === "space" && r === BLACKHOLE_POS.r && c === BLACKHOLE_POS.c) { cell.classList.add("blackhole"); cell.innerText = "🌀"; }
+            if (worldSpecificData.invisibleCells?.some(cell => cell.r === r && cell.c === c)) { 
+                cell.classList.add("invisible"); 
+                cell.innerText = "???"; 
+            }
+            if (worldSpecificData.rustedCells?.some(rust => rust.r === r && rust.c === c)) {
+                cell.classList.add("rusted");
+            }
+            if (currentWorld === "space" && r === BLACKHOLE_POS.r && c === BLACKHOLE_POS.c) { 
+                cell.classList.add("blackhole"); 
+                cell.innerText = "🌀"; 
+            }
             if (val === "🌸") cell.classList.add("flower-bonus");
             applySkinToCell(cell);
-            cell.onclick = () => handleCellClick(r,c);
+            cell.onclick = () => handleCellClick(r, c);
             boardEl.appendChild(cell);
         }
     }
@@ -458,6 +527,10 @@ function generateValidBoard() {
 }
 
 function shuffleBoard() {
+    if (gameState !== GAME_STATE.WAIT_FOR_INPUT) {
+        addWorldMessage("⏳ Подождите, сейчас нельзя тасовать!");
+        return;
+    }
     generateValidBoard();
     renderBoard();
     addWorldMessage("🃏 Поле перетасовано!");
@@ -533,7 +606,7 @@ function updateLevelSelector() {
     let container = document.getElementById("levelSelector");
     if (!container) return;
     container.innerHTML = "";
-    for (let i=1;i<=8;i++) {
+    for (let i = 1; i <= 8; i++) {
         let badge = document.createElement("div");
         badge.className = "level-badge";
         badge.innerText = i;
@@ -542,7 +615,13 @@ function updateLevelSelector() {
         if (completed) badge.classList.add("completed");
         if (!unlocked) badge.classList.add("locked");
         if (i === currentLevel) badge.classList.add("current");
-        if (unlocked) badge.onclick = () => { currentLevel = i; startLevel(); updateLevelSelector(); };
+        if (unlocked) badge.onclick = () => { 
+            if (gameState === GAME_STATE.WAIT_FOR_INPUT) {
+                currentLevel = i; 
+                startLevel(); 
+                updateLevelSelector();
+            }
+        };
         container.appendChild(badge);
     }
 }
@@ -565,13 +644,14 @@ function updateWorldUI() {
     let nextBtn = document.getElementById("nextWorldBtn");
     let idx = WORLDS_LIST.indexOf(currentWorld);
     let hasPrev = false, hasNext = false;
-    for (let i=idx-1;i>=0;i--) if (playerProgress[WORLDS_LIST[i]]?.isUnlocked) hasPrev = true;
-    for (let i=idx+1;i<WORLDS_LIST.length;i++) if (playerProgress[WORLDS_LIST[i]]?.isUnlocked) hasNext = true;
+    for (let i = idx-1; i >= 0; i--) if (playerProgress[WORLDS_LIST[i]]?.isUnlocked) hasPrev = true;
+    for (let i = idx+1; i < WORLDS_LIST.length; i++) if (playerProgress[WORLDS_LIST[i]]?.isUnlocked) hasNext = true;
     if (prevBtn) prevBtn.disabled = !hasPrev;
     if (nextBtn) nextBtn.disabled = !hasNext;
 }
 
 function startLevel() {
+    gameState = GAME_STATE.WAIT_FOR_INPUT;
     gameActive = true;
     isLocking = false;
     selectedCell = null;
@@ -645,18 +725,26 @@ function resetLevel() {
 
 function steampunkUltimate() {
     if (currentWorld !== "steampunk" || steamGears < 40) return;
+    if (gameState !== GAME_STATE.WAIT_FOR_INPUT) {
+        addWorldMessage("⏳ Сейчас нельзя использовать ульту!");
+        return;
+    }
     steamGears = 0;
-    let row = Math.floor(Math.random()*8);
-    for (let c=0;c<8;c++) boardState[row][c] = null;
+    let row = Math.floor(Math.random() * 8);
+    for (let c = 0; c < 8; c++) boardState[row][c] = null;
     addWorldMessage(`💨 ПАРОВОЙ УДАР! Ряд ${row+1} уничтожен!`);
     renderBoard();
-    applyGravityAndRefill(false);
+    startFallSequence();
     let ultBtn = document.getElementById("ultimaBtn");
     if (ultBtn) ultBtn.style.display = "none";
 }
 
 function goToWorld(worldId) {
     if (!playerProgress[worldId].isUnlocked) return;
+    if (gameState !== GAME_STATE.WAIT_FOR_INPUT) {
+        addWorldMessage("⏳ Подождите, сейчас нельзя сменить мир!");
+        return;
+    }
     currentWorld = worldId;
     currentLevel = playerProgress[worldId].unlockedLevel || 1;
     startLevel();
