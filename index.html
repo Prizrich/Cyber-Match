@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>КИБЕР-МАТЧ • МИРЫ И ЗАДАНИЯ</title>
-    <link rel="stylesheet" href="CSS/style.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Press+Start+2P&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- НАЧАЛЬНЫЙ ЭКРАН -->
@@ -43,18 +44,18 @@
                             <span>🔊</span>
                         </div>
                     </div>
+                    <div class="sound-option">
+                        <label>🎨 СТИЛЬ ИНТЕРФЕЙСА</label>
+                        <div class="style-buttons">
+                            <button class="style-btn" data-style="default">✨ СОВРЕМЕННЫЙ</button>
+                            <button class="style-btn" data-style="pixel">👾 ПИКСЕЛЬНЫЙ</button>
+                        </div>
+                    </div>
                 </div>
                 <div class="info-text">🎧 Настройки сохраняются автоматически</div>
             </div>
         </div>
     </div>
-    <div class="sound-option">
-    <label>🎨 СТИЛЬ ИНТЕРФЕЙСА</label>
-    <div class="style-buttons">
-        <button class="style-btn active" data-style="default">✨ СОВРЕМЕННЫЙ</button>
-        <button class="style-btn" data-style="pixel">👾 ПИКСЕЛЬНЫЙ</button>
-    </div>
-</div>
 
     <!-- ОСНОВНОЙ КОНТЕЙНЕР ИГРЫ -->
     <div id="gameWrapper" class="game-container-wrapper">
@@ -100,8 +101,9 @@
             <div class="board-wrapper">
                 <div id="board" class="board"></div>
             </div>
-            <div style="display: flex; gap: 8px; justify-content: center; margin-top: 12px;">
+            <div style="display: flex; gap: 8px; justify-content: center; margin-top: 12px; flex-wrap: wrap;">
                 <button id="resetBtn" class="btn">🔄 РЕСТАРТ УРОВНЯ</button>
+                <button id="shuffleBtn" class="btn">🃏 ТАСОВАТЬ</button>
             </div>
         </div>
     </div>
@@ -129,8 +131,6 @@
         </div>
     </div>
 
-    <button id="shuffleBtn" class="btn">🃏 ТАСОВАТЬ</button>
-
     <div id="shopModal" class="shop-modal">
         <div class="shop-container">
             <div class="victory-title" style="font-size: 1.2rem;">🛒 КИБЕР-МАГАЗИН</div>
@@ -153,7 +153,7 @@
 
     <canvas id="confettiCanvas" class="confetti-canvas"></canvas>
 
-    <!-- ПОДКЛЮЧЕНИЕ СКРИПТОВ (В ПРАВИЛЬНОМ ПОРЯДКЕ) -->
+    <!-- ПОДКЛЮЧЕНИЕ СКРИПТОВ -->
     <script src="js/config.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/audio.js"></script>
