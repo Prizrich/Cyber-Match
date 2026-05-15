@@ -1,7 +1,6 @@
 // Основная игровая логика
 
 let uiElements = {};
-let isCascading = false;
 
 function setUIElements(elements) {
     uiElements = elements;
@@ -200,7 +199,6 @@ function applyGravityAndRefill(checkForMatches = false) {
     for (let c = 0; c < 8; c++) {
         let col = [];
         
-        // Собираем существующие фишки (не пустые)
         if (!inverted) {
             for (let r = 7; r >= 0; r--) {
                 if (boardState[r][c]) col.push(boardState[r][c]);
@@ -211,28 +209,9 @@ function applyGravityAndRefill(checkForMatches = false) {
             }
         }
         
-        // Добиваем колонку новыми фишками, проверяя, чтобы они не создавали комбинации
+        // Заполняем пустоты новыми фишками
         while (col.length < 8) {
-            let available = [...emojis];
-            let pos = col.length;
-            let r = !inverted ? 7 - pos : pos;
-            
-            // Проверяем горизонтальные комбинации
-            if (c >= 2 && boardState[r] && boardState[r][c-1] === boardState[r][c-2]) {
-                available = available.filter(e => e !== boardState[r][c-1]);
-            }
-            // Проверяем вертикальные комбинации
-            if (pos >= 2 && col[pos-1] === col[pos-2]) {
-                available = available.filter(e => e !== col[pos-1]);
-            }
-            
-            // Если нет доступных символов - берём все
-            if (available.length === 0) {
-                available = [...emojis];
-            }
-            
-            let newEmoji = available[Math.floor(Math.random() * available.length)];
-            col.push(newEmoji);
+            col.push(emojis[Math.floor(Math.random() * emojis.length)]);
         }
         
         if (!inverted) {
@@ -253,10 +232,21 @@ function applyGravityAndRefill(checkForMatches = false) {
         setTimeout(() => c.classList.remove("falling"), 200);
     });
     
+    // Убираем ВСЕ комбинации, созданные игрой (без награды, без траты ходов)
+    let matches = hasMatches();
+    if (matches.length > 0) {
+        for (let m of matches) {
+            boardState[m.r][m.c] = null;
+        }
+        // Рекурсивно применяем гравитацию снова
+        setTimeout(() => applyGravityAndRefill(false), 100);
+        return;
+    }
+    
     if (checkForMatches) {
-        let matches = hasMatches();
-        if (matches.length > 0) {
-            setTimeout(() => processMatchesAndCascade(matches), 100);
+        let matchesAfter = hasMatches();
+        if (matchesAfter.length > 0) {
+            setTimeout(() => processMatchesAndCascade(matchesAfter), 100);
         }
     }
 }
@@ -319,7 +309,6 @@ function processMatchesAndCascade(matchesArray) {
     playSound("match");
     
     setTimeout(() => {
-        // Просто падаем, НЕ проверяем новые комбинации!
         applyGravityAndRefill(false);
         
         if (currentWorld === "space") applyBlackhole();
@@ -418,59 +407,24 @@ function generateValidBoard() {
         }
     }
     
-    // Генерируем поле БЕЗ комбинаций
-    let maxAttempts = 100;
-    let attempts = 0;
-    
     do {
         for (let r = 0; r < 8; r++) {
             for (let c = 0; c < 8; c++) {
                 let available = [...emojis];
-                
-                // Проверка горизонтали
                 if (c >= 2 && boardState[r][c-1] === boardState[r][c-2]) {
                     available = available.filter(e => e !== boardState[r][c-1]);
                 }
-                // Проверка вертикали
                 if (r >= 2 && boardState[r-1][c] === boardState[r-2][c]) {
                     available = available.filter(e => e !== boardState[r-1][c]);
                 }
-                
                 if (available.length === 0) {
                     available = [...emojis];
                 }
-                
                 boardState[r][c] = available[Math.floor(Math.random() * available.length)];
             }
         }
-        attempts++;
-        if (attempts > maxAttempts) break;
     } while (hasMatches().length > 0);
-    
-    // Если всё-таки есть комбинации — удаляем их без награды
-    let finalMatches = hasMatches();
-    if (finalMatches.length > 0) {
-        for (let m of finalMatches) {
-            boardState[m.r][m.c] = null;
-        }
-        applyGravityAndRefill(false);
-    }
 }
-
-function sanitizeBoard() {
-    let matches = hasMatches();
-    let safeGuard = 0;
-    
-    while (matches.length > 0 && safeGuard < 20) {
-        for (let m of matches) {
-            boardState[m.r][m.c] = null;
-        }
-        applyGravityAndRefill(false);
-        matches = hasMatches();
-        safeGuard++;
-    }
-}
-
 
 function shuffleBoard() {
     generateValidBoard();
