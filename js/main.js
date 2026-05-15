@@ -12,17 +12,6 @@ function initUIElements() {
     setUIElements(window.uiElements);
 }
 
-const shuffleBtn = document.getElementById("shuffleBtn");
-if (shuffleBtn) {
-    shuffleBtn.onclick = () => {
-        if (confirm("Перетасовать поле? Это не потратит ход.")) {
-            generateValidBoard();
-            renderBoard();
-            addWorldMessage("🃏 Поле перетасовано!");
-        }
-    };
-}
-
 function initStartScreen() {
     loadAudioSettingsUI();
     
@@ -140,6 +129,7 @@ function setupEventListeners() {
     const resetProgressBtn = document.getElementById("resetProgressBtn");
     const victoryRestartBtn = document.getElementById("victoryRestartBtn");
     const exitToMenuBtn = document.getElementById("exitToMenuBtn");
+    const shuffleBtn = document.getElementById("shuffleBtn");
     
     if (resetBtn) resetBtn.onclick = () => resetLevel();
     if (nextLevelBtn) nextLevelBtn.onclick = () => nextLevel();
@@ -158,6 +148,11 @@ function setupEventListeners() {
     };
     if (victoryRestartBtn) victoryRestartBtn.onclick = () => victoryRestart();
     if (exitToMenuBtn) exitToMenuBtn.onclick = () => exitToMainMenu();
+    if (shuffleBtn) shuffleBtn.onclick = () => {
+        if (confirm("🃏 Перетасовать поле? Ход не потратится.")) {
+            shuffleBoard();
+        }
+    };
 }
 
 function showTutorial() {
@@ -168,7 +163,7 @@ function showTutorial() {
     list.innerHTML = "";
     const worlds = [
         { name: "🌲 ЛЕСНОЙ МИР", color: "#4caf50", desc: "🌸 Цветок +50% очков при сборе | Каждые 3 матча дают +1 ход" },
-        { name: "⚙️ СТИМПАНК", color: "#cd7f32", desc: "🦾 Ржавчина: нужно составить ряд ДВАЖДЫ | 💨 40 шестерёнок → Паровой удар" },
+        { name: "⚙️ СТИМПАНК", color: "#cd7f32", desc: "⚙️ Ржавчина: нужно составить ряд ДВАЖДЫ | 💨 40 шестерёнок → Паровой удар" },
         { name: "🤖 КИБЕРПАНК", color: "#00f0ff", desc: "⚠️ 2 хода без комбо → случайная клетка глохнет | 💻 Комбо x3+ → +1 ход" },
         { name: "🪐 КОСМОС", color: "#9c27b0", desc: "🔄 Инверсия гравитации каждые 4 хода | ⚫ Черная дыра в центре засасывает соседей" }
     ];
@@ -242,7 +237,7 @@ function initStyleSwitcher() {
 // Запуск
 document.addEventListener("DOMContentLoaded", () => {
     initUIElements();
+    initStyleSwitcher();  // Сначала применяем стиль
     setupEventListeners();
     initStartScreen();
-    initStyleSwitcher(); 
 });
