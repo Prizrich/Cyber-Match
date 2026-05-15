@@ -192,6 +192,7 @@ function addQuestProgress(matchedCells) {
     }
 }
 
+// ОСНОВНАЯ ФУНКЦИЯ ПАДЕНИЯ С УМНЫМ ФИЛЬТРОМ
 function applyGravityAndRefill(checkForMatches = false) {
     let emojis = WORLDS[currentWorld].emojis;
     let inverted = gravityInverted && currentWorld === "space";
@@ -199,6 +200,7 @@ function applyGravityAndRefill(checkForMatches = false) {
     for (let c = 0; c < 8; c++) {
         let col = [];
         
+        // Собираем существующие фишки
         if (!inverted) {
             for (let r = 7; r >= 0; r--) {
                 if (boardState[r][c]) col.push(boardState[r][c]);
@@ -209,9 +211,35 @@ function applyGravityAndRefill(checkForMatches = false) {
             }
         }
         
-        // Заполняем пустоты новыми фишками
+        // Заполняем пустоты новыми фишками с проверкой на комбинации
         while (col.length < 8) {
-            col.push(emojis[Math.floor(Math.random() * emojis.length)]);
+            let pos = col.length;
+            let r = !inverted ? 7 - pos : pos;
+            
+            // Какие символы доступны?
+            let available = [...emojis];
+            
+            // Проверка горизонтали: создаст ли новая фишка комбо с соседями слева?
+            if (c >= 2 && boardState[r] && boardState[r][c-1] === boardState[r][c-2]) {
+                available = available.filter(e => e !== boardState[r][c-1]);
+            }
+            // Проверка вертикали: создаст ли новая фишка комбо с фишками над/под собой?
+            if (pos >= 2 && col[pos-1] === col[pos-2]) {
+                available = available.filter(e => e !== col[pos-1]);
+            }
+            // Проверка будущей вертикали (с уже существующими фишками выше)
+            if (pos >= 1 && pos + 1 < 8 && boardState[r + (inverted ? -1 : 1)] && 
+                boardState[r + (inverted ? -1 : 1)][c] === col[pos-1]) {
+                available = available.filter(e => e !== col[pos-1]);
+            }
+            
+            // Если всё заблокировано - снимаем ограничения
+            if (available.length === 0) {
+                available = [...emojis];
+            }
+            
+            let newEmoji = available[Math.floor(Math.random() * available.length)];
+            col.push(newEmoji);
         }
         
         if (!inverted) {
@@ -232,13 +260,12 @@ function applyGravityAndRefill(checkForMatches = false) {
         setTimeout(() => c.classList.remove("falling"), 200);
     });
     
-    // Убираем ВСЕ комбинации, созданные игрой (без награды, без траты ходов)
+    // Убираем комбинации, которые всё-таки могли образоваться (без награды)
     let matches = hasMatches();
     if (matches.length > 0) {
         for (let m of matches) {
             boardState[m.r][m.c] = null;
         }
-        // Рекурсивно применяем гравитацию снова
         setTimeout(() => applyGravityAndRefill(false), 100);
         return;
     }
