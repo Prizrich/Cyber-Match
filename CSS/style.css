@@ -1,38 +1,5 @@
-/* Принудительное применение современного стиля по умолчанию */
-body.default-style {
-    font-family: 'Orbitron', 'Rajdhani', 'Press Start 2P', monospace;
-}
-
-/* Принудительное применение пиксельного стиля */
-body.pixel-style {
-    font-family: 'Press Start 2P', monospace;
-}
-
-/* Убеждаемся, что по умолчанию (без классов) тоже современный стиль */
-body:not(.pixel-style) {
-    font-family: 'Orbitron', 'Rajdhani', 'Press Start 2P', monospace;
-}
-
-body:not(.pixel-style) .start-container,
-body:not(.pixel-style) .game-container,
-body:not(.pixel-style) .modal,
-body:not(.pixel-style) .victory-card,
-body:not(.pixel-style) .shop-container,
-body:not(.pixel-style) .tutorial-container {
-    border-radius: 40px;
-}
-
-body:not(.pixel-style) .btn,
-body:not(.pixel-style) .shop-btn,
-body:not(.pixel-style) .play-btn {
-    border-radius: 40px;
-}
-
-body:not(.pixel-style) .cell {
-    border-radius: 10px;
-}
-
-{
+/* ===== БАЗОВЫЕ СТИЛИ ===== */
+* {
     box-sizing: border-box;
     user-select: none;
 }
@@ -139,7 +106,32 @@ body.pixel-style .level-badge.current {
     box-shadow: 0 0 0px 3px var(--world-primary) !important;
 }
 
-/* ===== ОБЩИЕ СТИЛИ (НЕ МЕНЯЮТСЯ) ===== */
+body.pixel-style .tabs,
+body.pixel-style .tab-btn,
+body.pixel-style .sound-settings,
+body.pixel-style .style-btn,
+body.pixel-style .shop-btn,
+body.pixel-style .reset-progress-btn,
+body.pixel-style .exit-menu-btn,
+body.pixel-style .help-btn,
+body.pixel-style .world-header,
+body.pixel-style .currency-bar,
+body.pixel-style .quest-panel,
+body.pixel-style .stats-row,
+body.pixel-style .board-wrapper,
+body.pixel-style .modal,
+body.pixel-style .victory-card,
+body.pixel-style .shop-container,
+body.pixel-style .tutorial-container,
+body.pixel-style .shop-item,
+body.pixel-style .shop-close,
+body.pixel-style .tutorial-close,
+body.pixel-style .skin-preview,
+body.pixel-style .world-tutorial {
+    border-radius: 0px !important;
+}
+
+/* ===== ОБЩИЕ СТИЛИ ===== */
 body::before {
     content: "";
     position: fixed;
@@ -180,8 +172,9 @@ body::before {
 
 .start-container {
     background: linear-gradient(135deg, rgba(26, 30, 44, 0.95), rgba(15, 18, 31, 0.95));
-    padding: 40px;
+    padding: 35px 30px;
     max-width: 480px;
+    min-width: 340px;
     width: 90%;
     text-align: center;
     border: 3px solid var(--neon-cyan);
@@ -189,18 +182,18 @@ body::before {
 }
 
 .game-title {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
     color: var(--neon-cyan);
     text-shadow: 0 0 15px var(--neon-cyan);
-    margin-bottom: 20px;
-    letter-spacing: 4px;
+    margin-bottom: 15px;
+    letter-spacing: 2px;
 }
 
 .game-subtitle {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     color: #aaa;
-    margin-bottom: 30px;
-    letter-spacing: 2px;
+    margin-bottom: 25px;
+    letter-spacing: 1px;
 }
 
 .tabs {
@@ -209,6 +202,7 @@ body::before {
     margin-bottom: 25px;
     background: rgba(0, 0, 0, 0.4);
     padding: 5px;
+    border-radius: 50px;
 }
 
 .tab-btn {
@@ -216,11 +210,12 @@ body::before {
     background: transparent;
     border: none;
     color: #ccc;
-    font-size: 1rem;
-    padding: 10px 20px;
+    font-size: 0.9rem;
+    padding: 10px 15px;
     cursor: pointer;
     transition: all 0.3s;
     font-weight: bold;
+    border-radius: 40px;
 }
 
 .tab-btn.active {
@@ -239,17 +234,18 @@ body::before {
 
 .sound-settings {
     background: rgba(0, 0, 0, 0.5);
-    padding: 25px;
+    padding: 20px;
     text-align: left;
+    border-radius: 30px;
 }
 
 .sound-option {
-    margin-bottom: 25px;
+    margin-bottom: 20px;
 }
 
 .sound-option label {
     display: block;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: bold;
     color: #fff;
     margin-bottom: 10px;
@@ -264,13 +260,13 @@ body::before {
 
 .slider-container span {
     color: #fff;
-    font-size: 1.2rem;
+    font-size: 1rem;
 }
 
 .slider-container span:last-child {
     width: 45px;
     text-align: center;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: var(--neon-cyan);
     font-weight: bold;
 }
@@ -279,9 +275,9 @@ body::before {
     flex: 1;
     height: 6px;
     -webkit-appearance: none;
-    appearance: none;
     background: #333;
     outline: none;
+    border-radius: 3px;
 }
 
 .sound-slider::-webkit-slider-thumb {
@@ -290,6 +286,7 @@ body::before {
     height: 18px;
     background: var(--neon-cyan);
     cursor: pointer;
+    border-radius: 50%;
 }
 
 .style-buttons {
@@ -303,34 +300,48 @@ body::before {
     background: rgba(0, 0, 0, 0.6);
     border: 2px solid var(--neon-cyan);
     color: var(--neon-cyan);
-    padding: 10px 20px;
+    padding: 8px 18px;
     cursor: pointer;
     font-weight: bold;
-    transition: all 0.2s;
+    transition: all 0.3s;
+    border-radius: 30px;
+    font-size: 0.8rem;
 }
 
 .style-btn.active {
     background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
     color: #000;
     border-color: transparent;
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
+}
+
+.style-btn:hover {
+    transform: scale(1.03);
 }
 
 .play-btn {
     background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
     border: none;
     color: white;
-    font-size: 1.2rem;
-    padding: 15px 40px;
+    font-size: 1.1rem;
+    padding: 14px 35px;
     cursor: pointer;
     margin-top: 25px;
     letter-spacing: 2px;
     width: 100%;
+    border-radius: 50px;
+}
+
+.play-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 30px rgba(0, 240, 255, 0.5);
 }
 
 .info-text {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     color: #aaa;
     margin-top: 20px;
+    text-align: center;
 }
 
 /* ОСНОВНОЙ ИГРОВОЙ КОНТЕЙНЕР */
@@ -354,7 +365,6 @@ body::before {
     padding: 15px;
     position: relative;
     z-index: 1;
-    box-shadow: 0 0 40px rgba(0,0,0,0.5);
     border: 1px solid rgba(255,255,255,0.15);
 }
 
@@ -366,6 +376,7 @@ body::before {
     cursor: pointer;
     font-weight: bold;
     font-size: 0.75rem;
+    border-radius: 35px;
 }
 
 .exit-menu-btn:hover {
@@ -388,6 +399,7 @@ body.world-space { background: radial-gradient(ellipse at 30% 40%, #0a0a2a 0%, #
     margin-bottom: 15px;
     flex-wrap: wrap;
     gap: 8px;
+    border-radius: 50px;
 }
 
 .currency {
@@ -399,6 +411,7 @@ body.world-space { background: radial-gradient(ellipse at 30% 40%, #0a0a2a 0%, #
     font-size: 1rem;
     font-weight: bold;
     color: #fff;
+    border-radius: 35px;
 }
 
 .shop-btn, .reset-progress-btn, .ultima-btn {
@@ -407,6 +420,7 @@ body.world-space { background: radial-gradient(ellipse at 30% 40%, #0a0a2a 0%, #
     font-weight: bold;
     font-size: 0.85rem;
     border: none;
+    border-radius: 35px;
 }
 
 .shop-btn { background: linear-gradient(135deg, #ffd700, #ffaa00); color: #000; }
@@ -417,6 +431,7 @@ body.world-space { background: radial-gradient(ellipse at 30% 40%, #0a0a2a 0%, #
     background: rgba(0,0,0,0.6);
     padding: 10px;
     margin-bottom: 15px;
+    border-radius: 50px;
 }
 
 .world-nav {
@@ -434,6 +449,7 @@ body.world-space { background: radial-gradient(ellipse at 30% 40%, #0a0a2a 0%, #
     height: 44px;
     font-size: 1.3rem;
     cursor: pointer;
+    border-radius: 50%;
 }
 
 .world-nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
@@ -444,6 +460,7 @@ body.world-space { background: radial-gradient(ellipse at 30% 40%, #0a0a2a 0%, #
     padding: 8px;
     background: rgba(0,0,0,0.5);
     border: 2px solid var(--world-primary);
+    border-radius: 35px;
 }
 
 .current-world-icon { font-size: 2rem; }
@@ -458,6 +475,7 @@ body.world-space { background: radial-gradient(ellipse at 30% 40%, #0a0a2a 0%, #
     height: 38px;
     cursor: pointer;
     font-size: 1.2rem;
+    border-radius: 50%;
 }
 
 .level-selector {
@@ -480,6 +498,7 @@ body.world-space { background: radial-gradient(ellipse at 30% 40%, #0a0a2a 0%, #
     border: 2px solid #555;
     font-size: 0.85rem;
     color: #fff;
+    border-radius: 50%;
 }
 
 .level-badge.locked { opacity: 0.4; cursor: not-allowed; background: rgba(0,0,0,0.5); }
@@ -491,6 +510,7 @@ body.world-space { background: radial-gradient(ellipse at 30% 40%, #0a0a2a 0%, #
     padding: 12px 15px;
     margin-bottom: 15px;
     border: 1px solid var(--world-primary);
+    border-radius: 25px;
 }
 
 .quest-target-display {
@@ -500,6 +520,7 @@ body.world-space { background: radial-gradient(ellipse at 30% 40%, #0a0a2a 0%, #
     text-align: center;
     font-size: 0.7rem;
     color: var(--neon-cyan);
+    border-radius: 15px;
 }
 
 .stats-row {
@@ -514,6 +535,7 @@ body.world-space { background: radial-gradient(ellipse at 30% 40%, #0a0a2a 0%, #
     font-size: 0.9rem;
     font-weight: bold;
     color: #fff;
+    border-radius: 50px;
 }
 
 .combo-indicator {
@@ -522,6 +544,7 @@ body.world-space { background: radial-gradient(ellipse at 30% 40%, #0a0a2a 0%, #
     font-weight: bold;
     animation: pulse 0.8s infinite alternate;
     color: #fff;
+    border-radius: 25px;
 }
 
 @keyframes pulse { 0% { opacity: 0.7; } 100% { opacity: 1; text-shadow: 0 0 10px #ff007f; } }
@@ -530,6 +553,7 @@ body.world-space { background: radial-gradient(ellipse at 30% 40%, #0a0a2a 0%, #
     background: rgba(12, 15, 26, 0.8);
     padding: 10px;
     border: 2px solid var(--world-primary);
+    border-radius: 25px;
 }
 
 .board {
@@ -583,11 +607,12 @@ body.world-space { background: radial-gradient(ellipse at 30% 40%, #0a0a2a 0%, #
     margin-top: 10px;
     font-size: 0.8rem;
     font-weight: bold;
+    border-radius: 35px;
 }
 
-.progress-bar-bg { background: rgba(42, 46, 68, 0.8); height: 6px; margin-top: 5px; overflow: hidden; }
+.progress-bar-bg { background: rgba(42, 46, 68, 0.8); height: 6px; margin-top: 5px; overflow: hidden; border-radius: 10px; }
 
-#worldExtraInfo { background: rgba(0,0,0,0.5); padding: 8px 12px; margin-top: 10px; font-size: 0.7rem; text-align: center; color: #ddd; }
+#worldExtraInfo { background: rgba(0,0,0,0.5); padding: 8px 12px; margin-top: 10px; font-size: 0.7rem; text-align: center; color: #ddd; border-radius: 20px; }
 
 /* Модальные окна */
 .modal-overlay, .shop-modal, .tutorial-overlay, .victory-celebration {
@@ -616,7 +641,7 @@ body.world-space { background: radial-gradient(ellipse at 30% 40%, #0a0a2a 0%, #
     border: 2px solid gold;
     max-width: 350px;
     width: 90%;
-    box-shadow: 0 0 40px rgba(0,0,0,0.5);
+    border-radius: 40px;
 }
 
 .modal .modal-title, .victory-card .victory-title {
@@ -637,6 +662,7 @@ body.world-space { background: radial-gradient(ellipse at 30% 40%, #0a0a2a 0%, #
     max-height: 85vh;
     overflow-y: auto;
     border: 2px solid gold;
+    border-radius: 40px;
 }
 
 .shop-container * {
@@ -652,6 +678,7 @@ body.world-space { background: radial-gradient(ellipse at 30% 40%, #0a0a2a 0%, #
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 10px;
+    border-radius: 20px;
 }
 
 .shop-item b { color: gold; }
@@ -662,6 +689,7 @@ body.world-space { background: radial-gradient(ellipse at 30% 40%, #0a0a2a 0%, #
     padding: 4px 12px;
     font-size: 0.7rem;
     font-weight: bold;
+    border-radius: 20px;
 }
 
 .shop-buy-btn {
@@ -671,6 +699,7 @@ body.world-space { background: radial-gradient(ellipse at 30% 40%, #0a0a2a 0%, #
     cursor: pointer;
     font-weight: bold;
     color: #000;
+    border-radius: 30px;
 }
 
 .shop-close, .tutorial-close {
@@ -682,6 +711,7 @@ body.world-space { background: radial-gradient(ellipse at 30% 40%, #0a0a2a 0%, #
     width: 100%;
     cursor: pointer;
     font-weight: bold;
+    border-radius: 35px;
 }
 
 .skin-preview {
@@ -691,6 +721,7 @@ body.world-space { background: radial-gradient(ellipse at 30% 40%, #0a0a2a 0%, #
     align-items: center;
     justify-content: center;
     font-size: 1.3rem;
+    border-radius: 10px;
 }
 
 .skin-preview.neon { background: #2a2e3c; border: 1px solid cyan; }
@@ -703,6 +734,7 @@ body.world-space { background: radial-gradient(ellipse at 30% 40%, #0a0a2a 0%, #
     padding: 15px;
     margin-bottom: 12px;
     border-left: 4px solid;
+    border-radius: 20px;
 }
 
 .world-tutorial h3 {
@@ -748,30 +780,4 @@ body.world-space { background: radial-gradient(ellipse at 30% 40%, #0a0a2a 0%, #
     .start-container { padding: 25px; }
     .tab-btn { font-size: 0.8rem; padding: 8px 15px; }
     .style-btn { font-size: 0.6rem; padding: 6px 12px; }
-}
-
-
-body.pixel-style .tabs,
-body.pixel-style .tab-btn,
-body.pixel-style .sound-settings,
-body.pixel-style .style-btn,
-body.pixel-style .play-btn,
-body.pixel-style .shop-btn,
-body.pixel-style .reset-progress-btn,
-body.pixel-style .exit-menu-btn,
-body.pixel-style .help-btn,
-body.pixel-style .world-header,
-body.pixel-style .currency-bar,
-body.pixel-style .quest-panel,
-body.pixel-style .stats-row,
-body.pixel-style .board-wrapper,
-body.pixel-style .progress-bar-bg,
-body.pixel-style .modal,
-body.pixel-style .victory-card,
-body.pixel-style .shop-container,
-body.pixel-style .tutorial-container,
-body.pixel-style .shop-item,
-body.pixel-style .shop-close,
-body.pixel-style .tutorial-close {
-    border-radius: 0px !important;
 }
