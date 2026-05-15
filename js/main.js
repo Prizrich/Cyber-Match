@@ -143,6 +143,7 @@ function setupEventListeners() {
         if (confirm("⚠️ УДАЛИТЬ ВЕСЬ ПРОГРЕСС?")) {
             localStorage.removeItem("cyberMatchFixed");
             localStorage.removeItem("cyberMatchAudio");
+            localStorage.removeItem("gameInterfaceStyle");
             location.reload();
         }
     };
@@ -184,27 +185,54 @@ function closeTutorial() {
     if (modal) modal.classList.remove("active");
 }
 
-// Переключение стилей интерфейса
+// Переключение стилей интерфейса (работает везде)
 function initStyleSwitcher() {
     // Получаем сохранённый стиль или ставим "default" по умолчанию
     let savedStyle = localStorage.getItem("gameInterfaceStyle");
     
-    // Если стиль не сохранён (первый запуск) - ставим современный стиль
     if (!savedStyle) {
         savedStyle = "default";
         localStorage.setItem("gameInterfaceStyle", "default");
     }
     
-    // Применяем сохранённый стиль (или default при первом запуске)
-    if (savedStyle === "pixel") {
+    // Применяем сохранённый стиль ко всему body
+    applyStyleToBody(savedStyle);
+    
+    // Находим кнопки в настройках и обновляем их состояние
+    updateStyleButtonsState(savedStyle);
+    
+    // Добавляем обработчики для кнопок
+    const styleBtns = document.querySelectorAll(".style-btn");
+    styleBtns.forEach(btn => {
+        btn.onclick = () => {
+            const newStyle = btn.dataset.style;
+            localStorage.setItem("gameInterfaceStyle", newStyle);
+            applyStyleToBody(newStyle);
+            updateStyleButtonsState(newStyle);
+            
+            // Визуальный эффект при смене стиля
+            const container = document.querySelector(".game-container") || document.querySelector(".start-container");
+            if (container) {
+                container.style.transform = "scale(0.99)";
+                setTimeout(() => {
+                    container.style.transform = "scale(1)";
+                }, 150);
+            }
+        };
+    });
+}
+
+function applyStyleToBody(style) {
+    if (style === "pixel") {
         document.body.classList.add("pixel-style");
         document.body.classList.remove("default-style");
     } else {
         document.body.classList.add("default-style");
         document.body.classList.remove("pixel-style");
     }
-    
-    // Находим кнопки в настройках (если они уже есть на странице)
+}
+
+function updateStyleButtonsState(savedStyle) {
     const styleBtns = document.querySelectorAll(".style-btn");
     styleBtns.forEach(btn => {
         const style = btn.dataset.style;
@@ -214,30 +242,13 @@ function initStyleSwitcher() {
         } else {
             btn.classList.remove("active");
         }
-        
-        btn.onclick = () => {
-            const newStyle = btn.dataset.style;
-            localStorage.setItem("gameInterfaceStyle", newStyle);
-            
-            if (newStyle === "pixel") {
-                document.body.classList.add("pixel-style");
-                document.body.classList.remove("default-style");
-            } else {
-                document.body.classList.add("default-style");
-                document.body.classList.remove("pixel-style");
-            }
-            
-            // Обновляем активную кнопку
-            styleBtns.forEach(b => b.classList.remove("active"));
-            btn.classList.add("active");
-        };
     });
 }
 
 // Запуск
 document.addEventListener("DOMContentLoaded", () => {
     initUIElements();
-    initStyleSwitcher();  // Сначала применяем стиль
+    initStyleSwitcher();  // Применяем стиль ПЕРЕД всем остальным
     setupEventListeners();
     initStartScreen();
 });
