@@ -71,26 +71,63 @@ function setActiveSkin(skinId) {
 function buyItem(itemId) {
     let item = SHOP_ITEMS.find(i => i.id === itemId);
     if (!item) return false;
+    
+    // Проверка ресурсов
     if ((item.priceCoins > 0 && playerStats.coins < item.priceCoins) || 
         (item.priceCrystals > 0 && playerStats.crystals < item.priceCrystals)) {
         alert("❌ Не хватает ресурсов!");
         return false;
     }
+    
+    // Списываем цену
     if (item.priceCoins > 0) playerStats.coins -= item.priceCoins;
     if (item.priceCrystals > 0) playerStats.crystals -= item.priceCrystals;
     
+    // Обработка эффектов
     if (item.effect?.crystalsGain) {
         addCrystals(item.effect.crystalsGain);
     } else if (item.effect?.coinsGain) {
         addCoins(item.effect.coinsGain);
     } else {
+        // Увеличиваем счётчик купленных предметов
         playerStats.ownedItems[itemId] = (playerStats.ownedItems[itemId] || 0) + 1;
+        
+        // ПРИМЕНЯЕМ ЭФФЕКТ СРАЗУ
+        if (itemId === "extra_moves") {
+            // Добавляем ходы прямо сейчас (5 ходов за штуку)
+            let gainedMoves = 5;
+            movesLeft += gainedMoves;
+            updateUI();
+            addWorldMessage(`✨ +${gainedMoves} ходов к уровню! ✨`);
+        }
+        
+        if (itemId === "double_score") {
+            if (!playerStats.consumablesUsed.double_score) {
+                playerStats.consumablesUsed.double_score = true;
+                window.activeDoubleScore = true;
+                addWorldMessage(`✨ ДВОЙНОЙ СЧЁТ АКТИВИРОВАН! ✨`);
+            } else {
+                addWorldMessage(`⚠️ Двойной счёт уже активен! ⚠️`);
+            }
+        }
+        
+        if (itemId === "combo_boost") {
+            if (!playerStats.consumablesUsed.combo_boost) {
+                playerStats.consumablesUsed.combo_boost = true;
+                window.activeStartCombo = 2;
+                combo = 2;
+                updateUI();
+                addWorldMessage(`✨ КОМБО УСИЛЕНИЕ АКТИВИРОВАНО! ✨`);
+            } else {
+                addWorldMessage(`⚠️ Усиление комбо уже активно! ⚠️`);
+            }
+        }
     }
     
     updateCurrency();
     saveGameProgress();
     alert(`✅ Куплено: ${item.name}!`);
-    openShop(); // Обновляем магазин
+    openShop(); 
     return true;
 }
 
