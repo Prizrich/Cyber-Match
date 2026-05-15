@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>КИБЕР-МАТЧ • МИРЫ И ЗАДАНИЯ</title>
-    <link rel="stylesheet" href="CSS/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Press+Start+2P&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>КИБЕР-МАТЧ • ПИКСЕЛЬНЫЙ РЕТРО</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- НАЧАЛЬНЫЙ ЭКРАН -->
@@ -42,13 +42,6 @@
                             <input type="range" id="soundsVolumeSlider" class="sound-slider" min="0" max="100" value="70">
                             <span id="soundsVolumeValue" class="volume-value">70%</span>
                             <span>🔊</span>
-                        </div>
-                    </div>
-                    <div class="sound-option">
-                        <label>🎨 СТИЛЬ ИНТЕРФЕЙСА</label>
-                        <div class="style-buttons">
-                            <button class="style-btn" data-style="default">✨ СОВРЕМЕННЫЙ</button>
-                            <button class="style-btn" data-style="pixel">👾 ПИКСЕЛЬНЫЙ</button>
                         </div>
                     </div>
                 </div>
@@ -112,7 +105,7 @@
     <div id="resultModal" class="modal-overlay">
         <div class="modal">
             <div id="modalIcon" style="font-size: 3rem;">🏆</div>
-            <div id="modalTitle" class="modal-title" style="font-size: 1.3rem;">ПОБЕДА!</div>
+            <div id="modalTitle" class="modal-title">ПОБЕДА!</div>
             <div id="modalStats" style="margin: 15px 0;"></div>
             <button id="nextLevelBtn" class="btn">▶ ДАЛЕЕ</button>
             <button id="modalRestartBtn" class="btn" style="margin-top:10px;">🔄 ЗАНОВО</button>
@@ -133,7 +126,7 @@
 
     <div id="shopModal" class="shop-modal">
         <div class="shop-container">
-            <div class="victory-title" style="font-size: 1.2rem;">🛒 КИБЕР-МАГАЗИН</div>
+            <div class="victory-title">🛒 КИБЕР-МАГАЗИН</div>
             <div style="display: flex; gap: 15px; justify-content: center; margin-bottom: 15px;">
                 <div class="currency">💰 <span id="shopCoins">0</span></div>
                 <div class="currency">💎 <span id="shopCrystals">0</span></div>
@@ -145,7 +138,7 @@
 
     <div id="tutorialModal" class="tutorial-overlay">
         <div class="tutorial-container">
-            <div class="victory-title" style="font-size: 1.2rem;">📖 УЧЕБНИК ЛОКАЦИЙ</div>
+            <div class="victory-title">📖 УЧЕБНИК ЛОКАЦИЙ</div>
             <div id="tutorialItemsList"></div>
             <button class="tutorial-close" id="closeTutorialBtn">ПОНЯТНО!</button>
         </div>
@@ -153,7 +146,6 @@
 
     <canvas id="confettiCanvas" class="confetti-canvas"></canvas>
 
-    <!-- ПОДКЛЮЧЕНИЕ СКРИПТОВ -->
     <script src="js/config.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/audio.js"></script>
