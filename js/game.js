@@ -200,24 +200,47 @@ function applyGravityAndRefill(checkForMatches = false) {
     for (let c = 0; c < 8; c++) {
         let col = [];
         
+        // Собираем существующие фишки (не пустые)
         if (!inverted) {
             for (let r = 7; r >= 0; r--) {
                 if (boardState[r][c]) col.push(boardState[r][c]);
-            }
-            while (col.length < 8) {
-                col.push(emojis[Math.floor(Math.random() * emojis.length)]);
-            }
-            col.reverse();
-            for (let r = 0; r < 8; r++) {
-                boardState[r][c] = col[r];
             }
         } else {
             for (let r = 0; r < 8; r++) {
                 if (boardState[r][c]) col.push(boardState[r][c]);
             }
-            while (col.length < 8) {
-                col.unshift(emojis[Math.floor(Math.random() * emojis.length)]);
+        }
+        
+        // Добиваем колонку новыми фишками, проверяя, чтобы они не создавали комбинации
+        while (col.length < 8) {
+            let available = [...emojis];
+            let pos = col.length;
+            let r = !inverted ? 7 - pos : pos;
+            
+            // Проверяем горизонтальные комбинации
+            if (c >= 2 && boardState[r] && boardState[r][c-1] === boardState[r][c-2]) {
+                available = available.filter(e => e !== boardState[r][c-1]);
             }
+            // Проверяем вертикальные комбинации
+            if (pos >= 2 && col[pos-1] === col[pos-2]) {
+                available = available.filter(e => e !== col[pos-1]);
+            }
+            
+            // Если нет доступных символов - берём все
+            if (available.length === 0) {
+                available = [...emojis];
+            }
+            
+            let newEmoji = available[Math.floor(Math.random() * available.length)];
+            col.push(newEmoji);
+        }
+        
+        if (!inverted) {
+            col.reverse();
+            for (let r = 0; r < 8; r++) {
+                boardState[r][c] = col[r];
+            }
+        } else {
             for (let r = 0; r < 8; r++) {
                 boardState[r][c] = col[r];
             }
@@ -230,7 +253,6 @@ function applyGravityAndRefill(checkForMatches = false) {
         setTimeout(() => c.classList.remove("falling"), 200);
     });
     
-    // НЕ ПРОВЕРЯЕМ КОМБИНАЦИИ ПОСЛЕ ПАДЕНИЯ - только если явно вызвано
     if (checkForMatches) {
         let matches = hasMatches();
         if (matches.length > 0) {
