@@ -12,6 +12,17 @@ function initUIElements() {
     setUIElements(window.uiElements);
 }
 
+const shuffleBtn = document.getElementById("shuffleBtn");
+if (shuffleBtn) {
+    shuffleBtn.onclick = () => {
+        if (confirm("Перетасовать поле? Это не потратит ход.")) {
+            generateValidBoard();
+            renderBoard();
+            addWorldMessage("🃏 Поле перетасовано!");
+        }
+    };
+}
+
 function initStartScreen() {
     loadAudioSettingsUI();
     
