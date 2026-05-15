@@ -18,7 +18,7 @@ const WORLD_QUESTS = {
         { icon: "🍄", target: 14, desc: "Собери 14 🍄" },
         { icon: "🐺", target: 12, desc: "Собери 12 🐺" },
         { icon: "🍃", target: 20, desc: "Собери 20 🍃" },
-        { icon: "🌲", target: 10, desc: "Собери 10 🌲 (БОСС)" }
+        { icon: "🌲", target: 10, desc: "Собери 40 🌲 (БОСС)" }
     ],
     steampunk: [
         { icon: "⚙️", target: 12, desc: "Собери 12 ⚙️" },
@@ -28,7 +28,7 @@ const WORLD_QUESTS = {
         { icon: "⚙️", target: 14, desc: "Собери 14 ⚙️" },
         { icon: "🔧", target: 12, desc: "Собери 12 🔧" },
         { icon: "🚂", target: 18, desc: "Собери 18 🚂" },
-        { icon: "🕰️", target: 10, desc: "Собери 10 🕰️ (БОСС)" }
+        { icon: "🕰️", target: 10, desc: "Собери 45 🕰️ (БОСС)" }
     ],
     cyber: [
         { icon: "🤖", target: 13, desc: "Собери 13 🤖" },
@@ -38,7 +38,7 @@ const WORLD_QUESTS = {
         { icon: "🤖", target: 15, desc: "Собери 15 🤖" },
         { icon: "👾", target: 13, desc: "Собери 13 👾" },
         { icon: "🛸", target: 20, desc: "Собери 20 🛸" },
-        { icon: "💻", target: 12, desc: "Собери 12 💻 (БОСС)" }
+        { icon: "💻", target: 12, desc: "Собери 50 💻 (БОСС)" }
     ],
     space: [
         { icon: "🪐", target: 10, desc: "Собери 10 🪐" },
@@ -48,7 +48,7 @@ const WORLD_QUESTS = {
         { icon: "🪐", target: 16, desc: "Собери 16 🪐" },
         { icon: "☄️", target: 11, desc: "Собери 11 ☄️" },
         { icon: "🚀", target: 18, desc: "Собери 18 🚀" },
-        { icon: "🌌", target: 15, desc: "Собери 15 🌌 (ФИНАЛ)" }
+        { icon: "🌌", target: 15, desc: "Собери 55 🌌 (ФИНАЛ)" }
     ]
 };
 
