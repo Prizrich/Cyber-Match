@@ -15,11 +15,13 @@ function updateCurrency() {
 function addCoins(amount) {
     playerStats.coins += amount;
     updateCurrency();
+    saveGameProgress();
 }
 
 function addCrystals(amount) {
     playerStats.crystals += amount;
     updateCurrency();
+    saveGameProgress();
 }
 
 function applySkinToCell(cell) {
@@ -34,20 +36,35 @@ function updateAllSkins() {
 
 function buySkin(skinId) {
     let skin = SKINS.find(s => s.id === skinId);
-    if (!skin || playerStats.ownedSkins.includes(skinId)) return false;
+    if (!skin || playerStats.ownedSkins.includes(skinId)) {
+        alert("❌ У вас уже есть этот скин!");
+        return false;
+    }
     if ((skin.priceCoins > 0 && playerStats.coins < skin.priceCoins) || 
-        (skin.priceCrystals > 0 && playerStats.crystals < skin.priceCrystals)) return false;
+        (skin.priceCrystals > 0 && playerStats.crystals < skin.priceCrystals)) {
+        alert("❌ Не хватает ресурсов!");
+        return false;
+    }
     if (skin.priceCoins > 0) playerStats.coins -= skin.priceCoins;
     if (skin.priceCrystals > 0) playerStats.crystals -= skin.priceCrystals;
     playerStats.ownedSkins.push(skinId);
     updateCurrency();
+    saveGameProgress();
+    alert(`✅ Скин "${skin.name}" куплен!`);
+    openShop(); // Обновляем магазин
     return true;
 }
 
 function setActiveSkin(skinId) {
-    if (!playerStats.ownedSkins.includes(skinId)) return false;
+    if (!playerStats.ownedSkins.includes(skinId)) {
+        alert("❌ Скин не куплен!");
+        return false;
+    }
     playerStats.activeSkin = skinId;
     updateAllSkins();
+    saveGameProgress();
+    alert(`✅ Скин "${SKINS.find(s => s.id === skinId).name}" надет!`);
+    openShop(); // Обновляем магазин
     return true;
 }
 
@@ -55,19 +72,31 @@ function buyItem(itemId) {
     let item = SHOP_ITEMS.find(i => i.id === itemId);
     if (!item) return false;
     if ((item.priceCoins > 0 && playerStats.coins < item.priceCoins) || 
-        (item.priceCrystals > 0 && playerStats.crystals < item.priceCrystals)) return false;
+        (item.priceCrystals > 0 && playerStats.crystals < item.priceCrystals)) {
+        alert("❌ Не хватает ресурсов!");
+        return false;
+    }
     if (item.priceCoins > 0) playerStats.coins -= item.priceCoins;
     if (item.priceCrystals > 0) playerStats.crystals -= item.priceCrystals;
-    if (item.effect?.crystalsGain) addCrystals(item.effect.crystalsGain);
-    if (item.effect?.coinsGain) addCoins(item.effect.coinsGain);
-    playerStats.ownedItems[itemId] = (playerStats.ownedItems[itemId] || 0) + 1;
+    
+    if (item.effect?.crystalsGain) {
+        addCrystals(item.effect.crystalsGain);
+    } else if (item.effect?.coinsGain) {
+        addCoins(item.effect.coinsGain);
+    } else {
+        playerStats.ownedItems[itemId] = (playerStats.ownedItems[itemId] || 0) + 1;
+    }
+    
     updateCurrency();
+    saveGameProgress();
+    alert(`✅ Куплено: ${item.name}!`);
+    openShop(); // Обновляем магазин
     return true;
 }
 
 function applyActiveBonuses() {
-    activeDoubleScore = playerStats.consumablesUsed.double_score;
-    activeStartCombo = playerStats.consumablesUsed.combo_boost ? 2 : 1;
+    window.activeDoubleScore = playerStats.consumablesUsed?.double_score || false;
+    window.activeStartCombo = playerStats.consumablesUsed?.combo_boost ? 2 : 1;
 }
 
 function openShop() {
@@ -76,46 +105,102 @@ function openShop() {
     if (!list) return;
     
     list.innerHTML = "";
+    
+    // Заголовок скинов
     let title = document.createElement("div");
-    title.style.cssText = "font-size:1rem;margin:10px 0;color:gold;font-family:'Orbitron'";
+    title.style.cssText = "font-size:0.7rem;margin:10px 0;color:gold;text-align:center";
     title.innerHTML = "🎨 СКИНЫ ДЛЯ КЛЕТОК";
     list.appendChild(title);
     
+    // Скины
     SKINS.forEach(skin => {
         let owned = playerStats.ownedSkins.includes(skin.id);
         let active = playerStats.activeSkin === skin.id;
         let div = document.createElement("div");
         div.className = "shop-item";
-        let price = skin.default ? "БЕСПЛАТНО" : (skin.priceCoins ? `💰 ${skin.priceCoins}` : `💎 ${skin.priceCrystals}`);
-        let btn = "";
-        if (!owned && !skin.default) btn = `<button class="shop-buy-btn skin-buy" data-skin="${skin.id}">КУПИТЬ</button>`;
-        else if (owned && !active) btn = `<button class="shop-buy-btn skin-set" data-skin="${skin.id}">НАДЕТЬ</button>`;
-        else if (active) btn = `<div class="skin-current">✅ НАДЕТО</div>`;
-        div.innerHTML = `<div style="display:flex;gap:10px"><div class="skin-preview ${skin.id}">${skin.icon}</div><div><b>${skin.name}</b></div></div><div style="display:flex;gap:8px"><span style="color:gold">${price}</span>${btn}</div>`;
+        
+        let priceText = "";
+        if (skin.default) {
+            priceText = "БЕСПЛАТНО";
+        } else if (skin.priceCoins > 0) {
+            priceText = `💰 ${skin.priceCoins}`;
+        } else {
+            priceText = `💎 ${skin.priceCrystals}`;
+        }
+        
+        let btnHtml = "";
+        if (!owned && !skin.default) {
+            btnHtml = `<button class="shop-buy-btn skin-buy" data-skin="${skin.id}">КУПИТЬ</button>`;
+        } else if (owned && !active) {
+            btnHtml = `<button class="shop-buy-btn skin-set" data-skin="${skin.id}">НАДЕТЬ</button>`;
+        } else if (active) {
+            btnHtml = `<div class="skin-current">✅ НАДЕТО</div>`;
+        } else if (skin.default && !active) {
+            btnHtml = `<button class="shop-buy-btn skin-set" data-skin="${skin.id}">НАДЕТЬ</button>`;
+        }
+        
+        div.innerHTML = `
+            <div style="display:flex;gap:10px;align-items:center">
+                <div class="skin-preview ${skin.id}" style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:1.2rem">${skin.icon}</div>
+                <div><b style="font-size:0.65rem">${skin.name}</b></div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center">
+                <span style="color:gold;font-size:0.55rem">${priceText}</span>
+                ${btnHtml}
+            </div>
+        `;
         list.appendChild(div);
     });
     
+    // Заголовок улучшений
     let title2 = document.createElement("div");
-    title2.style.cssText = "font-size:1rem;margin:20px 0 10px;color:gold;font-family:'Orbitron'";
+    title2.style.cssText = "font-size:0.7rem;margin:20px 0 10px;color:gold;text-align:center";
     title2.innerHTML = "🛍️ УЛУЧШЕНИЯ";
     list.appendChild(title2);
     
+    // Предметы магазина
     SHOP_ITEMS.forEach(item => {
         let count = playerStats.ownedItems[item.id] || 0;
         let div = document.createElement("div");
         div.className = "shop-item";
-        let price = (item.priceCoins ? `💰 ${item.priceCoins}` : "") + (item.priceCrystals ? ` 💎 ${item.priceCrystals}` : "");
-        let stack = count > 0 ? `<span style="background:#ff6600;padding:2px 8px;border-radius:15px;margin-left:5px;">x${count}</span>` : "";
-        div.innerHTML = `<div><b>${item.name} ${stack}</b><div style="font-size:0.65rem">${item.desc}</div></div><div style="display:flex;gap:8px"><span style="color:gold">${price}</span><button class="shop-buy-btn item-buy" data-item="${item.id}">КУПИТЬ</button></div>`;
+        
+        let priceText = "";
+        if (item.priceCoins > 0 && item.priceCrystals > 0) {
+            priceText = `💰 ${item.priceCoins} + 💎 ${item.priceCrystals}`;
+        } else if (item.priceCoins > 0) {
+            priceText = `💰 ${item.priceCoins}`;
+        } else {
+            priceText = `💎 ${item.priceCrystals}`;
+        }
+        
+        let stackHtml = count > 0 ? `<span style="background:#ff6600;padding:2px 6px;margin-left:5px;font-size:0.45rem">x${count}</span>` : "";
+        
+        div.innerHTML = `
+            <div>
+                <b style="font-size:0.6rem">${item.name} ${stackHtml}</b>
+                <div style="font-size:0.45rem;color:#aaa">${item.desc}</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center">
+                <span style="color:gold;font-size:0.55rem">${priceText}</span>
+                <button class="shop-buy-btn item-buy" data-item="${item.id}">КУПИТЬ</button>
+            </div>
+        `;
         list.appendChild(div);
     });
     
-    document.querySelectorAll(".skin-buy").forEach(btn => btn.onclick = () => { if (buySkin(btn.dataset.skin)) { openShop(); alert("✅ Скин куплен!"); } else alert("❌ Не хватает ресурсов!"); });
-    document.querySelectorAll(".skin-set").forEach(btn => btn.onclick = () => { setActiveSkin(btn.dataset.skin); openShop(); alert("✅ Скин надет!"); });
-    document.querySelectorAll(".item-buy").forEach(btn => btn.onclick = () => buyItem(btn.dataset.item));
+    // Добавляем обработчики
+    document.querySelectorAll(".skin-buy").forEach(btn => {
+        btn.onclick = () => buySkin(btn.dataset.skin);
+    });
+    document.querySelectorAll(".skin-set").forEach(btn => {
+        btn.onclick = () => setActiveSkin(btn.dataset.skin);
+    });
+    document.querySelectorAll(".item-buy").forEach(btn => {
+        btn.onclick = () => buyItem(btn.dataset.item);
+    });
     
-    if (modal) modal.classList.add("active");
     updateCurrency();
+    if (modal) modal.classList.add("active");
 }
 
 function closeShop() {
