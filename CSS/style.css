@@ -1,5 +1,38 @@
-/* ===== БАЗОВЫЕ СТИЛИ (ОБЩИЕ ДЛЯ ОБОИХ РЕЖИМОВ) ===== */
-* {
+/* Принудительное применение современного стиля по умолчанию */
+body.default-style {
+    font-family: 'Orbitron', 'Rajdhani', 'Press Start 2P', monospace;
+}
+
+/* Принудительное применение пиксельного стиля */
+body.pixel-style {
+    font-family: 'Press Start 2P', monospace;
+}
+
+/* Убеждаемся, что по умолчанию (без классов) тоже современный стиль */
+body:not(.pixel-style) {
+    font-family: 'Orbitron', 'Rajdhani', 'Press Start 2P', monospace;
+}
+
+body:not(.pixel-style) .start-container,
+body:not(.pixel-style) .game-container,
+body:not(.pixel-style) .modal,
+body:not(.pixel-style) .victory-card,
+body:not(.pixel-style) .shop-container,
+body:not(.pixel-style) .tutorial-container {
+    border-radius: 40px;
+}
+
+body:not(.pixel-style) .btn,
+body:not(.pixel-style) .shop-btn,
+body:not(.pixel-style) .play-btn {
+    border-radius: 40px;
+}
+
+body:not(.pixel-style) .cell {
+    border-radius: 10px;
+}
+
+{
     box-sizing: border-box;
     user-select: none;
 }
