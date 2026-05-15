@@ -49,40 +49,59 @@ body.default-style .cell {
     transition: all 0.08s linear;
 }
 
-/* ===== ПИКСЕЛЬНЫЙ СТИЛЬ ===== */
+/* ===== ПИКСЕЛЬНЫЙ РЕТРО-РЕЖИМ ===== */
 body.pixel-style {
     font-family: 'Press Start 2P', monospace !important;
     image-rendering: crisp-edges;
     image-rendering: pixelated;
 }
 
-body.pixel-style * {
+/* Принудительный пиксельный шрифт для ВСЕХ элементов */
+body.pixel-style *,
+body.pixel-style *::before,
+body.pixel-style *::after {
     font-family: 'Press Start 2P', monospace !important;
 }
 
+/* Все контейнеры без скруглений */
 body.pixel-style .start-container,
 body.pixel-style .game-container,
 body.pixel-style .modal,
 body.pixel-style .victory-card,
 body.pixel-style .shop-container,
-body.pixel-style .tutorial-container {
+body.pixel-style .tutorial-container,
+body.pixel-style .world-header,
+body.pixel-style .currency-bar,
+body.pixel-style .quest-panel,
+body.pixel-style .board-wrapper,
+body.pixel-style .stats-row,
+body.pixel-style .tabs,
+body.pixel-style .sound-settings,
+body.pixel-style .shop-item,
+body.pixel-style .world-tutorial {
     border-radius: 0px !important;
     box-shadow: 8px 8px 0px rgba(0,0,0,0.5) !important;
     border-width: 4px !important;
     backdrop-filter: none !important;
 }
 
+/* Все кнопки квадратные */
+body.pixel-style button,
 body.pixel-style .btn,
 body.pixel-style .shop-btn,
 body.pixel-style .play-btn,
 body.pixel-style .world-nav-btn,
-body.pixel-style .level-badge,
-body.pixel-style .currency,
-body.pixel-style button {
+body.pixel-style .exit-menu-btn,
+body.pixel-style .help-btn,
+body.pixel-style .reset-progress-btn,
+body.pixel-style .shop-close,
+body.pixel-style .tutorial-close {
     border-radius: 0px !important;
     box-shadow: 4px 4px 0px rgba(0,0,0,0.5) !important;
+    transition: none !important;
 }
 
+body.pixel-style button:active,
 body.pixel-style .btn:active,
 body.pixel-style .shop-btn:active,
 body.pixel-style .play-btn:active {
@@ -90,15 +109,27 @@ body.pixel-style .play-btn:active {
     box-shadow: 2px 2px 0px rgba(0,0,0,0.5) !important;
 }
 
+/* Ячейки игрового поля */
 body.pixel-style .cell {
     border-radius: 0px !important;
-    transition: all 0.05s linear;
-    font-size: calc(var(--cell-size) * 0.4) !important;
+    transition: none !important;
+    font-size: 12px !important;
+    font-family: 'Press Start 2P', monospace !important;
+}
+
+@media (max-width: 600px) {
+    body.pixel-style .cell {
+        font-size: 9px !important;
+    }
 }
 
 body.pixel-style .cell.selected {
     border-width: 3px !important;
     transform: scale(0.95);
+}
+
+body.pixel-style .level-badge.current {
+    box-shadow: 0 0 0px 3px var(--world-primary) !important;
 }
 
 body.pixel-style .progress-bar-bg {
@@ -109,32 +140,11 @@ body.pixel-style .sound-slider::-webkit-slider-thumb {
     border-radius: 0px;
 }
 
-body.pixel-style .level-badge.current {
-    box-shadow: 0 0 0px 3px var(--world-primary) !important;
-}
-
-body.pixel-style .tabs,
-body.pixel-style .tab-btn,
-body.pixel-style .sound-settings,
-body.pixel-style .style-btn,
-body.pixel-style .world-header,
-body.pixel-style .currency-bar,
-body.pixel-style .quest-panel,
-body.pixel-style .stats-row,
-body.pixel-style .board-wrapper,
-body.pixel-style .shop-item,
-body.pixel-style .shop-close,
-body.pixel-style .tutorial-close,
-body.pixel-style .skin-preview,
-body.pixel-style .world-tutorial,
-body.pixel-style .modal,
-body.pixel-style .victory-card,
-body.pixel-style .exit-menu-btn,
-body.pixel-style .help-btn,
-body.pixel-style .reset-progress-btn {
+body.pixel-style .skin-preview {
     border-radius: 0px !important;
 }
 
+/* Все тексты */
 body.pixel-style .game-title,
 body.pixel-style .game-subtitle,
 body.pixel-style .tab-btn,
@@ -148,7 +158,6 @@ body.pixel-style .level-badge,
 body.pixel-style .quest-target-display,
 body.pixel-style .stats-row span,
 body.pixel-style .combo-indicator,
-body.pixel-style .btn,
 body.pixel-style .modal .modal-title,
 body.pixel-style .victory-card .victory-title,
 body.pixel-style .shop-container *,
@@ -158,9 +167,28 @@ body.pixel-style #worldExtraInfo,
 body.pixel-style #questProgressDisplay,
 body.pixel-style #score,
 body.pixel-style #moves,
-body.pixel-style #comboDisplay {
+body.pixel-style #comboDisplay,
+body.pixel-style .skin-current,
+body.pixel-style .shop-buy-btn {
     font-family: 'Press Start 2P', monospace !important;
     letter-spacing: 0px !important;
+}
+
+/* Убираем анимации в ретро-режиме */
+body.pixel-style .combo-indicator,
+body.pixel-style .cell.flower-bonus,
+body.pixel-style .cell.blackhole,
+body.pixel-style .cell.match-fade {
+    animation: none !important;
+}
+
+body.pixel-style .cell.falling {
+    animation: fallGlidePixel 0.15s ease-out;
+}
+
+@keyframes fallGlidePixel {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
 
 /* ===== ОБЩИЕ СТИЛИ ===== */
@@ -815,4 +843,7 @@ body.world-space { background: radial-gradient(ellipse at 30% 40%, #0a0a2a 0%, #
     body.pixel-style .game-title { font-size: 0.9rem; }
     body.pixel-style .tab-btn { font-size: 0.55rem; }
     body.pixel-style .style-btn { font-size: 0.45rem; }
+    body.pixel-style .cell {
+        font-size: 9px !important;
+    }
 }
